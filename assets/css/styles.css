@@ -28,17 +28,28 @@ main{
 }
 
 a{
-    text-decoration:none;
+  text-decoration:none;
+  color:#6DB33F;
 }
+
+a:hover{
+  color:#FEFCFD;
+}
+
 
 body {
     font-family: "Readex Pro", Lato, sans-serif;
     margin: 50px;
     padding: 0;
-    /*background-color: #161824;*/
     background-color: #1B1F23;
     color: #FEFCFD;
     text-align: center;
+}
+
+ul{
+  list-style-type: none;
+  padding:0;
+  margin:0;
 }
 
 .menuPrincipal{
