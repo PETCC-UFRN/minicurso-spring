@@ -1,0 +1,141 @@
+/* Copyright (c) 2017 Anish Athalye */
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro);
+@import url(https://fonts.googleapis.com/css?family=Source+Code+Pro);
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@160..700&display=swap');
+
+
+*{
+  transition: .3s;
+}
+
+@keyframes slip-fade{
+    0%{opacity:0;top:20px;}
+    100%{opacity:1;top:0px;}
+}
+
+/*
+palheta de cores:
+#1B1F23  //preto azulado
+#FEFCFD  //branco
+#6DB33F  //verde
+*/
+
+
+main{
+    position: relative;
+    animation: slip-fade 0.75s;
+}
+
+a{
+    text-decoration:none;
+}
+
+body {
+    font-family: "Readex Pro", Lato, sans-serif;
+    margin: 50px;
+    padding: 0;
+    /*background-color: #161824;*/
+    background-color: #1B1F23;
+    color: #FEFCFD;
+    text-align: center;
+}
+
+.menuPrincipal{
+    font-family: 'Source Code Pro', sans-serif, monospace;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #6DB33F;
+    height: 4vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+
+.listaNavegacao{
+    display: flex;
+    list-style: none;
+}
+.listaNavegacao li{
+    margin-left: 32px;
+}
+
+.menuPrincipal ul a{
+    color: #FEFCFD;
+    text-decoration: none;
+    padding: 5px;
+    font-weight: bolder;
+}
+.menuPrincipal .listaNavegacao li a {
+    color: #FEFCFD;
+}
+
+.menuPrincipal ul a:hover{
+    color: #1B1F23;
+}
+
+.dias_e_temas ul {
+  display: grid;
+  text-align: left;
+  align-items: center;
+  margin: auto;
+  justify-content: center;
+}
+
+.dias_e_temas a {
+  color: #6DB33F; 
+}
+
+.dias_e_temas a:hover {
+  color: #FEFCFD;
+}
+
+#sumario {
+    position: fixed;
+    text-align: left;
+    top: 0;
+    left: 0;
+    width: 300px; /* Ajuste conforme necessário */
+    padding: 10px; /* Espaçamento interno opcional */
+    height: 100%; /* Para ocupar toda a altura da página */
+    overflow-y: auto; /* Para adicionar rolagem, se necessário */
+    transition: left 0.3s ease; /* Transição suave para a animação */
+}
+
+#sumario ul{
+    list-style-type: square; 
+}
+
+.sumario-oldschool{
+    color: #00e300;
+    border-right: 1px solid #00e300;
+    background: black;
+}
+
+#sumario.hidden {
+    left: -321px; /* Ajuste conforme a largura do sumário */
+}
+
+/* Estilizando a barra de rolagem no Chrome, Safari e Opera */
+#sumario::-webkit-scrollbar {
+    width: 3px; /* Largura da barra de rolagem */
+    
+}
+
+#sumario::-webkit-scrollbar-track {
+    background: #000; /* Cor do trilho da barra de rolagem */
+    
+}
+
+.sumario-oldschool::-webkit-scrollbar-thumb {
+    background: #00e300; /* Cor do polegar da barra de rolagem */
+    border-radius: 10px; /* Borda arredondada para o polegar */
+}
+
+.sumario-oldschool::-webkit-scrollbar-thumb:hover {
+    background: #00e300; /* Cor do polegar da barra de rolagem quando está sendo rolado */
+}
