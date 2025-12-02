@@ -7,6 +7,52 @@ title: Minicurso de Spring
 
     <h1>Dia 1</h1>
 
+    <details>
+        <summary><a href="#revisando-java">Revisando Java</a></summary>
+        <ul>
+            <li><a href="#classes-e-objetos">Classes e Objetos</a></li>
+            <li><a href="#encapsulamento">Encapsulamento</a></li>
+            <li><a href="#organizando-código-em-java">Organizando Código em Java</a></li>
+            <li><a href="#verificação-e-testes">Verificação e testes</a></li>
+        </ul>
+    </details>
+    <details>
+         <summary><a href="#introduzindo-o-spring">Introduzindo o Spring</a></summary>
+        <ul>
+            <li><a href="#ecossistema-spring">Ecossistema Spring</a></li>
+            <li><a href="#entendendo-dependências">Entendendo Dependências</a>
+                <ul> 
+                    <li><a href='#spring-como-injetor-de-dependências'>Spring como Injetor de Dependências</a>
+                        <ul>
+                            <li><a href='#applicationcontext'>ApplicationContext</a></li>
+                            <li><a href='#bean'>Bean</a></li>
+                            <li><a href='#annotations'>Annotations</a></li>
+                            <li><a href='#applicationproperties-ou-yml'>Applicationproperties ou yml</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li><a href="#spring-initialzr">Spring Initialzr</a></li>
+            <li><a href="#gerenciadores-de-projeto">Gerenciadores de Projeto</a>
+                <ul> 
+                    <li><a href="#maves">Maven</a></li>
+                    <li><a href="#gradle">Gradle</a></li>
+                </ul>
+            </li>
+            <li><a href="#colocando-em-prática">Colocando em Prática</a></li>
+        </ul>
+    </details>
+
+
+
+
+
+
+
+
+
+
+
   <button class="toggle-button" id="toggle-button">
   
       Esconder Sumário
@@ -15,15 +61,11 @@ title: Minicurso de Spring
 
 </div>
 
-<!--<div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/funny-math-meme.png" width="50%">
-</div>
--->
-
 <br>
 
 
 
-## Revisando Java
+# Revisando Java
 
 Antes de começarmos a estudar Spring é mais do que necessário darmos uma revisada na linguagem na qual o Spring se baseia, o Java!
 
@@ -98,7 +140,7 @@ public class contaBancaria {
 }
 ```
 
-Qualquer parte do código que tentar acessar o atributo senhaDoCliente de uma instancia dessa classe, vai conseguir!
+Qualquer parte do código que tentar acessar o atributo senhaDoCliente de uma instância dessa classe, vai conseguir!
 
 E da mesma maneira, qualquer parte do nosso código conseguiria adicionar e remover dinheiro sem nenhum tipo de checagem ou aviso.
 
@@ -118,7 +160,7 @@ Aqui vai uma tabelinha que mostra quais permissões de acesso são concedidas pa
 <div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/access-modifiers.png" width="60%">
 </div>
 
-### Pacotes, Grupos e Artefatos
+### Organizando Código em Java
 
 #### Pacotes
 
@@ -136,7 +178,7 @@ O Group Id identifica a organização do projeto, é similar ao domínio de uma 
 
 De maneira bem simples, version é a versão identificadora do artefato publicado.
 
-## O Que é Spring?
+## Introduzindo o Spring
 
 <div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/spring-logo.png" width="40%">
 </div>
@@ -171,8 +213,6 @@ No ecossistema Spring temos:
 - Spring HATEOAS, Spring Integration, Spring AMQP, entre muitos outros.
 
 ## Entendendo Dependências
-
-### O que são dependências?
 
 Podemos entender como dependências as classes e objetos que um componente do projeto precisa para funcionar.
 
@@ -215,6 +255,30 @@ São as instrução para o Spring, que dizem o que criar, quando criar, onde inj
 - @Configuration
 - @Bean
 
+#### Applicationproperties ou yml
+
+O Application.properties serve como o arquivo central de configuração do Spring Boot, definindo compotamentos da aplicação sem alterar o código.
+
+Exemplo do .properties:
+
+```java
+server.port=8081
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.jpa.show-sql=true
+```
+
+Exemplo do .yml:
+
+```yml
+server:
+  port: 8081
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+  jpa:
+    show-sql: true
+```
+
 ## Spring Initialzr
 
 <div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/spring-initilzr.png" width="100%">
@@ -244,26 +308,15 @@ Gerenciadores de projeto tem como função principal resolver dependências auto
 - Flexível e altamente configurável
 - Muito usado em projetos modernos (Spring, Android)
 
-#### Application.properties (.yml)
+## Colocando em Prática
 
-O Application.properties serve como o arquivo central de configuração do Spring Boot, definindo compotamentos da aplicação sem alterar o código.
+--------------(Essa parte ainda não foi concluida, isso é apenas uma idéia)--------------
 
-Exemplo do .properties:
+Agora que vimos toda a parte teórica finalmente podemos começar a mexer com a parte prática da coisa. Para finalizar o dia, iremos aprender a como usar o [Spring Initialzr](https://start.spring.io/) para iniciar um projeto!
 
-```java
-server.port=8081
-spring.datasource.url=jdbc:h2:mem:testdb
-spring.jpa.show-sql=true
-```
+#### Passo a Passo
 
-Exemplo do .yml:
-
-```yml
-server:
-  port: 8081
-spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
-  jpa:
-    show-sql: true
-```
+- 1º passo:
+- 2º passo:
+- 3º passo:
+- [...]
