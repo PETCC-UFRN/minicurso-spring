@@ -115,7 +115,8 @@ Agora, apenas métodos da própria classe podem checar ou alterar esses valores!
 
 Aqui vai uma tabelinha que mostra quais permissões de acesso são concedidas para cada modificador de acesso:
 
-<!--colocar tabelinha-->
+<div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/access-modifiers.png" width="60%">
+</div>
 
 ### Pacotes, Grupos e Artefatos
 
