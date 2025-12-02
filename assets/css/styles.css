@@ -44,7 +44,63 @@ body {
     background-color: #1B1F23;
     color: #FEFCFD;
     text-align: center;
+    font-size: 20px;
 }
+
+.layoutConteudo{
+    font-family: "Readex Pro", Lato, sans-serif;
+    margin: 0px;
+    padding: 0;
+    background-color: #1B1F23;
+    color: #FEFCFD;
+    text-align: center;
+}
+
+.conteudo-justificado {
+    text-align: justify;
+    text-justify: inter-word;
+    max-width: 1000px; /* ou a largura que preferir */
+    margin: 0 auto; /* centraliza o bloco */
+    padding: 20px;
+    list-style-type: disc;
+}
+
+.conteudo-justificado ul {
+    list-style-type: disc !important;
+    padding-left: 2em !important;
+    margin: 1em 0 !important;
+    display: block;
+}
+
+.conteudo-justificado ol {
+    list-style-type: decimal !important;
+    padding-left: 2em !important;
+    margin: 1em 0 !important;
+}
+
+.conteudo-justificado li {
+    display: list-item !important;
+    margin: 0.5em 0;
+    text-align: left;
+}
+
+.layoutConteudo h1{
+    font-size: 2.5em;
+    text-align: center;
+}
+
+.layoutConteudo h2{
+    font-size: 2em;
+}
+
+.layoutConteudo h3{
+    font-size: 1.5em;
+}
+
+.layoutConteudo h4{
+    font-size: 1em;
+}
+
 
 ul{
   list-style-type: none;
