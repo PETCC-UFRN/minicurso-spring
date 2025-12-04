@@ -43,16 +43,6 @@ title: Minicurso de Spring
         </ul>
     </details>
 
-
-
-
-
-
-
-
-
-
-
   <button class="toggle-button" id="toggle-button">
   
       Esconder Sumário
@@ -63,7 +53,11 @@ title: Minicurso de Spring
 
 <br>
 
+# Resumo do primeiro dia
 
+Bem vindo ao minicurso **Introdução ao desenvolvimento back-end com Spring!**
+
+Esta é a primeira aula do nosso curso, portanto, será uma aula mais introdutória. Começaremos com uma revisão rápida de Java, pois é a linguagem base do framework, além de conceitos básicos de Programação Orientada a Objetos (POO). Logo após, vamos falar um pouco sobre o **Ecossistema Spring** e as diferentes aplicações das suas ferramentas, além de explicar como o Spring Framework funciona e, o mais importante: "Porque Spring Framework?". Por fim, encerraremos a aula com um exercício onde você irá iniciar o seu primeiro projeto Spring utilizando a ferramenta Spring Initializr, além de alguns extras. Boa aula!
 
 # Revisando Java
 
@@ -98,7 +92,6 @@ public class Main {
 <div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/java-study.png" width="40%">
 </div>
 
-
 Uma classe pode herdar todos os atributos e métodos de uma outra classe. Esse conceito é conhecido como herança, vamos ver um exemplo:
 
 ```java
@@ -111,6 +104,7 @@ public class FormaRedondaComFuroNoMeio extends FormaRedonda {
     float raioDoFuro = 4;
 }
 ```
+
 #### Interfaces
 
 Em Java podemos criar classes que servem como "molde" para outras classes, dizendo o que devem implementar:
@@ -127,6 +121,7 @@ public class CartaoCreditoService implements PagamentoService {
     }
 }
 ```
+
 ### Encapsulamento
 
 Encapsular é o ato de agrupar dados (atributos) e comportamentos (métodos) dentro de uma classe, e restringir o acesso direto aos componentes internos de um objeto. Isso permite que os atributos de uma classe só possam ser acessados ou alterados em situações específicas.
@@ -185,12 +180,10 @@ De maneira bem simples, version é a versão identificadora do artefato publicad
 
 Spring é um framework Java para criação de aplicações modernas, robustas e escaláveis. Ele facilita o desenvolvimento, fornecendo funcionalidades prontas para serem implementadas no projeto, dentre elas:
 
-
 - Injeção de dependências (IoC)
 - Controle de ciclo de vida dos objetos
 - Acesso simplificado a banco de dados
 - Integração com APIs, segurança, web, mensagens etc.
-
 
 O principal objetivo do Spring é, então, ajudar o densenvolvedor a construir aplicações rapidamente e com código menos repetivivo.
 
