@@ -87,40 +87,7 @@ public class Main {
 
 ```
 
-#### Herança e Polimorfismo
-
-<div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/java-study.png" width="40%">
-</div>
-
-Uma classe pode herdar todos os atributos e métodos de uma outra classe. Esse conceito é conhecido como herança, vamos ver um exemplo:
-
-```java
-public class FormaRedonda{ //a forma do bolo
-    float profundidade = 6;
-    float raio = 15;
-}
-
-public class FormaRedondaComFuroNoMeio extends FormaRedonda {
-    float raioDoFuro = 4;
-}
-```
-
-#### Interfaces
-
-Em Java podemos criar classes que servem como "molde" para outras classes, dizendo o que devem implementar:
-
-```java
-public interface PagamentoService {
-    void processarPagamento(double valor);
-}
-
-public class CartaoCreditoService implements PagamentoService {
-    @Override
-    public void processarPagamento(double valor) {
-        // Lógica específica
-    }
-}
-```
+**Exercício:** Para ajudar a relembrar, ou ter certeza que já conhecemos classes, crie uma classe "User" em Java com atributos e métodos à sua escolha e instancie essa classe na classe Main. Sua classe pode ser oganizada da maneira que quiser, mas coloque um atributo booleano "ativo".
 
 ### Encapsulamento
 
@@ -154,6 +121,54 @@ Aqui vai uma tabelinha que mostra quais permissões de acesso são concedidas pa
 
 <div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/access-modifiers.png" width="60%">
 </div>
+
+**Exercício:** Agora que finalmente revimos o conceito de encapsulamento, volte nas classes "User" que você programou mais cedo e reveja se esses conceitos foram seguidos de maneira satisfatória!
+
+#### Herança
+
+<div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/java-study.png" width="40%">
+</div>
+
+Uma classe pode herdar todos os atributos e métodos de uma outra classe. Esse conceito é conhecido como herança, vamos ver um exemplo:
+
+```java
+public class FormaRedonda{ //a forma do bolo
+    float profundidade = 6;
+    float raio = 15;
+}
+
+public class FormaRedondaComFuroNoMeio extends FormaRedonda {
+    float raioDoFuro = 4;
+}
+```
+**Exercício:** Agora que relembramos o conceito de Herança, crie a classe "Admin" a partir da classe usuário. Objetos instanciados dessa classe devem poder chamar um método que desativa um usuário (muda o valor do atributo "Ativo" do usuário alvo para *false*).
+
+#### Interfaces
+
+Em Java podemos criar classes que servem como "molde" para outras classes, dizendo o que devem implementar:
+
+```java
+public interface PagamentoService {
+    void processarPagamento(double valor);
+}
+
+public class CartaoCreditoService implements PagamentoService {
+    @Override
+    public void processarPagamento(double valor) {
+        // Lógica específica
+    }
+}
+```
+
+**Exercício:** A partir da interface abaixo, implemente uma classe "AdminService" que atenda todos os requisitos de "GenericUserService".
+
+```java
+public interface GenericUserService {
+    void verificarUserStatus(User usuario); 
+    void reativarUser(User usuario);
+}
+
+```
 
 ### Organizando Código em Java
 
