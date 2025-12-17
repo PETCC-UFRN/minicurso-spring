@@ -211,14 +211,14 @@ O ecossistema Spring é um conjunto de várias ferramentas, módulos e projetos 
 
 No ecossistema Spring temos:
 
-- Spring Boot — facilita iniciar aplicações rapidamente
-- Spring Data — abstração para acesso a dados (JPA, Mongo, Redis…)
-- Spring Security — autenticação, autorização, criptografia.
-- Spring AI — recursos para integrar modelos de IA (LLMs).
-- Spring Cloud — soluções para microsserviços.
-- Spring Batch — processamento em lote.
-- Spring Web / WebFlux — APIs REST.
-- Spring HATEOAS, Spring Integration, Spring AMQP, entre muitos outros.
+- Spring Boot — facilita iniciar aplicações rapidamente. *Exemplo: criação da base de um novo projeto do zero.*
+- Spring Data — abstração para acesso a dados (JPA, Mongo, Redis…). *Exemplo: crição automática de métodos para acessar o banco de dados.*
+- Spring Security — autenticação, autorização, criptografia. *Exemplo: criação de um login com autenticação.*
+- Spring AI — recursos para integrar modelos de IA (LLMs). *Exemplo: integração de um chatbot à aplicação utilizando a API da OpenAI*
+- Spring Cloud — soluções para microsserviços. *Exemplo: gerencia de um projeto com partes separadas que se intercomunicam como o ifood, com a parte dos intregadores, dos restaurantes e do cliente final*
+- Spring Batch — processamento em lote. *Exemplo: grandes processamentos de dados que devem ser feitos em um período pré-estabelecido*
+- Spring Web / WebFlux — APIs REST. *Exemplo: seções do aplicativo que precisam receber informações da internet, como uma busca de todos os restaurantes dentro de uma área de 5 KM*
+- Spring HATEOAS, Spring Integration, Spring AMQP, entre muitos outros. *Exemplo: gerencia de links dentro da aplicação que podem levar a outras páginas da mesma.*
 
 ## Entendendo Dependências
 
@@ -256,12 +256,12 @@ São os objetos controlados pelo Spring. É o componente gerenciado pelo Applica
 
 São as instrução para o Spring, que dizem o que criar, quando criar, onde injetar e como configurar tudo. Como exemplos, temos:
 
-- @Component
-- @Service
-- @Repository
-- @Autowired
-- @Configuration
-- @Bean
+- @Component. *Utilidade: indica que a classe é gerida automaticamente pelo Spring*
+- @Service. *Utilidade: indica que a classe implementa lógicas de negócio*
+- @Repository. *Utilidade: abstrai o acesso ao banco de dados*
+- @Autowired. *Utilidade: injeta as dependências automaticamente*
+- @Configuration. *Utilidade: demarca que a classe define e configura os beans*
+- @Bean. *Utilidade: Declara que um método produz um bean gerenciado pelo Spring*
 
 #### Applicationproperties ou yml
 
@@ -318,11 +318,11 @@ Gerenciadores de projeto tem como função principal resolver dependências auto
 
 ## Colocando em Prática
 
---------------(Essa parte ainda não foi concluida, isso é apenas uma idéia)--------------
-
 Agora que vimos toda a parte teórica finalmente podemos começar a mexer com a parte prática da coisa. Para finalizar o dia, iremos aprender a como usar o [Spring Initialzr](https://start.spring.io/) para iniciar um projeto!
 
 #### Passo a Passo
+
+<!--por favor, adicionem o passo a passo aqui-->
 
 - 1º passo:
 - 2º passo:
