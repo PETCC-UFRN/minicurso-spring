@@ -52,3 +52,128 @@ Veja que isso é muito parecido com o protocolo HTTP! Entende porque falamos del
 </div>
 
 OBS.: É importante lembrar que APIs RESTful são *baseadas* no protocolo HTTP (utilizam muitos métodos do protocolo), mas que não *seguem-o* à risca.
+
+## Arquitetura de Sistemas
+<div style="text-align: center;">
+<img src="assets/images/clean_arch.png" alt="Diagrama ilustrando a arquitetura de um sistema em camadas" width="40%">
+</div>
+
+- Forma como um sistema é organizado internamente.
+- Define responsabilidades, comunicação e separação de partes.
+- Importante para manutenção, escalabilidade e trabalho em equipe.
+
+---
+
+## Arquitetura em Camadas
+<div style="text-align: center;">
+<img src="assets/images/arquitetura.png" alt="Diagrama ilustrando a arquitetura de um sistema em camadas" width="50%">
+</div>
+
+- Separação de responsabilidades.
+- Cada camada tem um papel bem definido.
+- Camadas comuns em aplicações Spring:
+  - Model
+  - Controller
+  - Service
+  - Repository
+
+---
+
+## Camada Model
+- Define os objetos do domínio do sistema.
+- Representa entidades como:
+  - Usuário
+  - Produto
+  - Post
+  - Livro
+- Geralmente mapeada para o banco de dados.
+- No Spring:
+  - Anotação comum: @Entity
+
+---
+
+## Camada Controller
+- Responsável por receber requisições HTTP.
+- Exposição dos endpoints da API.
+- Chama a camada Service.
+- Retorna respostas HTTP.
+
+### Exemplos de métodos:
+- getUsuario
+- createProduto
+- removeProduto
+
+### Anotações comuns:
+- @RestController
+- @GetMapping
+- @PostMapping
+
+---
+
+## Camada Repository
+- Responsável pela comunicação com o banco de dados.
+- Implementa operações CRUD.
+
+### Exemplos:
+- findById
+- findByNome
+- save
+- delete
+
+### No Spring:
+- Extende JpaRepository
+- Anotação: @Repository
+
+---
+
+## Camada Service
+- Implementa a lógica de negócio.
+- Centraliza regras do sistema.
+- Combina dados de várias entidades.
+
+### Exemplo:
+- realizarCompra:
+  - valida usuário
+  - verifica estoque
+  - calcula valor
+  - processa pagamento
+
+### No Spring:
+- Anotação: @Service
+
+---
+
+## Fluxo entre as Camadas
+Controller -> Service -> Repository -> Banco  
+Model é utilizado por todas as camadas.
+
+---
+
+## Mantendo o Sistema Organizado
+- Organização facilita manutenção.
+- Reduz bugs.
+- Facilita testes e evolução do sistema.
+
+---
+
+## A Importância do Design da API
+- Define como o cliente interage com o sistema.
+- Boas APIs são:
+  - previsíveis
+  - semânticas
+  - consistentes
+  - RESTful
+
+---
+
+## Exercício Prático (Live Coding)
+- Implementação de um sistema de biblioteca.
+- Foco nas camadas:
+  - Model
+  - Controller
+  - Repository
+
+### Funcionalidades:
+- Cadastro de livros
+- Listagem de livros
+- Integração com banco de dados
