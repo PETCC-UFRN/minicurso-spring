@@ -42,7 +42,13 @@ title: Minicurso de Spring
             <li><a href="#exercício-prático-live-coding">Exercício Prático (Live Coding)</a></li>
         </ul>
   </details>
+    <button class="toggle-button" id="toggle-button">
+  
+      Esconder Sumário
+  
+  </button>
   </div>
+<br>
 
 ## Resumo do segundo dia
 
