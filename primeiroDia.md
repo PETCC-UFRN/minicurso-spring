@@ -70,18 +70,27 @@ Antes de começarmos a estudar Spring é mais do que necessário darmos uma revi
 
 Em Java, classes são moldes que definem a estrutura e o comportamento de objetos que sejam criados a partir dos mesmos. Por outro lado, objetos são instâncias das classes e se comportam conforme as regrinhas que foram estabelecidas em sua classe. Um exêmplo famoso que ajuda a lembrar bem desses dois conceitos é o da forma e do bolo: a forma é a classe que molda o bolo, o bolo é o objeto moldado pela forma.
 
+As classes também possuem **métodos**, que consistem em funções que podem ser chamadas por qualquer instância daquela classe.
+
 ```java
 public class FormaQuadrada{ //a forma do bolo
     float profundidade = 6;
-    float tamanhoLado = 20;
+    float altura = 20;
+    float largura = 20;
+
+    public float calcularVolume(){
+      return this.profundidade * this.altura * this.largura;
+  }
 }
 ```
 
 ```java
 public class Main {
     public static void main(String[] args) {
-        FormaQuadrada bolo = new FormaQuadrada; 
+        FormaQuadrada bolo = new FormaQuadrada;
         //bolo é a instância da nossa classe, ou seja, o objeto
+        volumeBolo = bolo.calcularVolume()
+        System.out.println(volumeBolo) // o valor printado será 20 * 20 * 6 = 2400
     }
 }
 
@@ -135,12 +144,28 @@ Uma classe pode herdar todos os atributos e métodos de uma outra classe. Esse c
 public class FormaRedonda{ //a forma do bolo
     float profundidade = 6;
     float raio = 15;
+
+    public float calcularVolume(){
+      return 3.14 * (raio * raio) * profundidade;
+
+  }
 }
 
 public class FormaRedondaComFuroNoMeio extends FormaRedonda {
+    float profundidade = 6; 
+    float raio = 15;
     float raioDoFuro = 4;
+    
+    // aqui estamos sobreescrevendo o método "calcularVolume"
+    // para manter a corretude na forma com um furo no meio.
+    public float calcularVolume (){
+      volumeTotal = 3.14 * (raio * raio) * profundidade;
+      volumeFuro = 3.14 * (raioDoFuro * raioDoFuro) * profundidade;
+      return volumeTotal - volumeFuro;
+  }
 }
 ```
+
 **Exercício:** Agora que relembramos o conceito de Herança, crie a classe "Admin" a partir da classe usuário. Objetos instanciados dessa classe devem poder chamar um método que desativa um usuário (muda o valor do atributo "Ativo" do usuário alvo para *false*).
 
 #### Interfaces
@@ -207,18 +232,25 @@ O principal objetivo do Spring é, então, ajudar o densenvolvedor a construir a
 <div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/green-spring.png" width="60%">
 </div>
 
-O ecossistema Spring é um conjunto de várias ferramentas, módulos e projetos que trabalham juntos, de maneira em que cada projeto resolve um problema específico.
+O ecossistema Spring é um conjunto de mais de 20 ferramentas, módulos e projetos que trabalham juntos, de maneira em que cada projeto resolve um problema específico. Sendo assim, dentro de uma aplicação podemos utilizar diferentes ferramentas. Considere portanto o contexto de uma aplicação de pedidos de comida para *delivery*:
 
-No ecossistema Spring temos:
+- Spring Boot — Facilita iniciar aplicações rapidamente.
+  - É uma versão opinativa do Spring Framework, isto é, com depedências já pré-instaladas e outras configurações já estabelecidas para tornar a inicialização de um projeto mais rápida e produtiva. No contexto da aplicação tem tanto um forte impacto no desenvolvimento quanto um impacto na velocidade de incialização, por exemplo.
+- Spring Data — Abstração para acesso a dados
+  - Traz interfaces que podem ser utiilzadas para implementar muito rapidamente os métodos de acesso ao banco de dados da aplicação. No contexto da aplicação, o Spring Data seria utilizado para "puxar" do banco de dados (via *Queries*) coisas como nomes de restaurantes, avaliações, itens do cardápio de cada restaurante, etc.
+- Spring Security — autenticação, autorização, criptografia.
+  - Seria utilizado para a criação de usuários para clientes e criação de restaurantes no contexto da aplicação, tudo de forma robusta e evitando problemas como vazamentos de dados, etc.
+- Spring AI — recursos para integrar modelos de IA (LLMs).
+  - Poderia ser usado para a integração de um chatbot com a API da OpenAI que orientasse o usuário a como utilizar a aplicação.
+- Spring Cloud — soluções para microsserviços.
+  - Poderia ser utilizado para integração da aplicação com outros serviços já existentes como o iFood, por exemplo.
+- Spring Batch — processamento em lote.
+  - Otimização da aplicação.
+- Spring Web / WebFlux — APIs REST.
+  - Estabelece o meio de comunicação entre Back-End, Front-End e Banco de dados.
+- Spring HATEOAS, Spring Integration, Spring AMQP, entre muitos outros.
 
-- Spring Boot — facilita iniciar aplicações rapidamente. *Exemplo: criação da base de um novo projeto do zero.*
-- Spring Data — abstração para acesso a dados (JPA, Mongo, Redis…). *Exemplo: crição automática de métodos para acessar o banco de dados.*
-- Spring Security — autenticação, autorização, criptografia. *Exemplo: criação de um login com autenticação.*
-- Spring AI — recursos para integrar modelos de IA (LLMs). *Exemplo: integração de um chatbot à aplicação utilizando a API da OpenAI*
-- Spring Cloud — soluções para microsserviços. *Exemplo: gerencia de um projeto com partes separadas que se intercomunicam como o ifood, com a parte dos intregadores, dos restaurantes e do cliente final*
-- Spring Batch — processamento em lote. *Exemplo: grandes processamentos de dados que devem ser feitos em um período pré-estabelecido*
-- Spring Web / WebFlux — APIs REST. *Exemplo: seções do aplicativo que precisam receber informações da internet, como uma busca de todos os restaurantes dentro de uma área de 5 KM*
-- Spring HATEOAS, Spring Integration, Spring AMQP, entre muitos outros. *Exemplo: gerencia de links dentro da aplicação que podem levar a outras páginas da mesma.*
+Nosso foco nesse minicurso será direcionado principalmente ao Spring Boot e Spring Web.
 
 ## Entendendo Dependências
 
@@ -286,6 +318,71 @@ spring:
   jpa:
     show-sql: true
 ```
+
+## POO no Spring
+
+  No início dessa aula tivemos uma revisão básica de Java e de Programação Orientada a Objetos (POO). Sendo assim, agora vamos entender como podemos aplicar esses conceitos no desenvolvimento da nossa aplicação.
+
+### Camadas de um projeto Spring
+
+  Um projeto Spring geralmente é dividido em quatro camadas:
+
+- Model (ou Entity) - Objetos/Entidades do nosso site;
+- Controller - Camada onde desenvolveremos nossa API;
+- Service - Lógica de Negócio ;
+- Repository - Comunicação direta com o Banco de Dados;
+
+***OBS.: Como o foco desse curso é apenas desenvolvimento Web, as soluções relacionadas à camada Repository serão sempre disponibilizadas previamente***
+
+  Sendo cada uma dessas camadas responsável por uma parte do sistema. Ao longo desse curso vamos focar no desenvolvimento das camadas Model, Controller e Service e, na aula de hoje, vamos nos aprofundar na camada Model.
+
+  Aqui está a estrutura resumida de um projeto Spring:
+
+  ```terminal
+
+  ProjetoSpring/
+  ├── diferentes arquivos de configuração, arquivos de documentação, etc.
+  └── src
+    ├── controller
+    │   └── EntidadeController.java
+    ├── model
+    │   └── Entidade.java
+    ├── repository
+    │   └── EntidadeRepository.java
+    └── service
+        └── EntidadeService.java
+  ```
+
+Vamos ver essa estrutura em prática no final dessa aula.
+
+### A camada Model
+
+  Voltemos um pouco ao exemplo da aplicação de delivery: para a implementação de uma operação como "Fazer Pedido", precisamos implementar uma série de classes como a classe Usuário, a classe Cliente que herda de Usuário, a classe Restaurante, além de diversas outras classes que serão utilizadas no processamento do pagamento, uma classe para armazenar o pedido, etc.
+
+  Todas essas classes são chamadas, no contexto do projeto, de *entidades*, e é na camada Model que elas residem. Sendo assim, esta camada é a que mais se assemelha com a programação de qualquer outro projeto em Java.
+
+  Se você já estudou Banco de Dados alguma vez então você provavelmente está achando o nome "entidade" muito familiar, e você está no caminho certo! Todas as classes que são implementadas na camada model possuem ligação direta com as entidades do Banco de Dados da aplicação, e essa ligação é feita a partir de *Annotations*. Aqui está um exemplo de implementação de uma classe User na camada Model:
+
+```java
+@Entity
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Column(name="nome", columnDefinition = "VARCHAR(255)")
+    private String name;
+
+    @Column(name="email", columnDefinition = "VARCHAR(255)")
+    private String email;
+
+    @ManyToOne
+    @JoinColumn(name = "user_type_id")
+    @JsonProperty("user_type")
+    private User_Type user_type;
+}
+```
+
+  Não se preocupe e entender agora cada uma dessas *Annotations*, apenas perceba que, antes da classe utilizamos `@Entity` para indicar ao compilador que aquela classe representa uma entidade do Banco de Dados, bem como antes de cada atributo utilizamos `@Column` para indicar que aquele atributo representa uma coluna específica da entidade (tabela). A partir dessas *Annotations* as classes do sistema e as entidades do banco se tornam 100% ligadas umas as outras.
 
 ## Spring Initialzr
 
