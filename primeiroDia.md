@@ -413,15 +413,16 @@ Gerenciadores de projeto tem como função principal resolver dependências auto
 - Flexível e altamente configurável
 - Muito usado em projetos modernos (Spring, Android)
 
-## Colocando em Prática
+## Criando um Projeto na Prática
 
-Agora que vimos toda a parte teórica finalmente podemos começar a mexer com a parte prática da coisa. Para finalizar o dia, iremos aprender a como usar o [Spring Initialzr](https://start.spring.io/) para iniciar um projeto!
+Agora que vimos toda a parte teórica finalmente podemos começar a mexer com a parte prática da coisa. Iremos aprender a como usar o [Spring Initialzr](https://start.spring.io/) para iniciar um projeto!
 
 #### Passo a Passo
 
-<!--por favor, adicionem o passo a passo aqui-->
-
-- 1º passo:
-- 2º passo:
-- 3º passo:
-- [...]
+- 1º passo: Abra o site do Spring Initialzr clicando [aqui](https://start.spring.io/) 
+- 2º passo: Na parte "Project" selecione o gerenciador de projetos **Maven**.
+- 3º passo: Na parte Language selecione a linguagem que estamos utilizando nesse minicurso.
+- 4º passo: Na seção Group, coloque ufrn.petcc.
+- 5º passo: Na seção Artifact, coloque meu-primeiro-projeto.
+- 6º passo: Selecione **Jar** na seção Packaging.
+- 7º passo: Selecione a versão 21 do Java.
