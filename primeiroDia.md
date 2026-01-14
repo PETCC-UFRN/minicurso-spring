@@ -427,5 +427,5 @@ Agora que vimos toda a parte teórica finalmente podemos começar a mexer com a 
 - 6º passo: Selecione **Jar** na seção Packaging.
 - 7º passo: Selecione a versão 21 do Java.
 - 8º passo: Clique em **Generate**, baixe, extraia e abra o projeto no vscode.
-- 9º passo: Abra o .jar em src/main/java/ufrn/petcc/primeiroprojeto.
+- 9º passo: Abra o PrimeiroprojetoApplication.java em src/main/java/ufrn/petcc/primeiroprojeto.
 - 10º passo: Por fim, aperte no botão "Run" do vscode e seu projeto estará rodando!
