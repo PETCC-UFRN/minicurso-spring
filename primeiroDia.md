@@ -237,7 +237,7 @@ O ecossistema Spring é um conjunto de mais de 20 ferramentas, módulos e projet
 - Spring Boot — Facilita iniciar aplicações rapidamente.
   - É uma versão opinativa do Spring Framework, isto é, com depedências já pré-instaladas e outras configurações já estabelecidas para tornar a inicialização de um projeto mais rápida e produtiva. No contexto da aplicação tem tanto um forte impacto no desenvolvimento quanto um impacto na velocidade de incialização, por exemplo.
 - Spring Data — Abstração para acesso a dados
-  - Traz interfaces que podem ser utiilzadas para implementar muito rapidamente os métodos de acesso ao banco de dados da aplicação. No contexto da aplicação, o Spring Data seria utilizado para "puxar" do banco de dados (via *Queries*) coisas como nomes de restaurantes, avaliações, itens do cardápio de cada restaurante, etc.
+  - Traz interfaces que podem ser utilizadas para implementar muito rapidamente os métodos de acesso ao banco de dados da aplicação. No contexto da aplicação, o Spring Data seria utilizado para "puxar" do banco de dados (via *Queries*) coisas como nomes de restaurantes, avaliações, itens do cardápio de cada restaurante, etc.
 - Spring Security — autenticação, autorização, criptografia.
   - Seria utilizado para a criação de usuários para clientes e criação de restaurantes no contexto da aplicação, tudo de forma robusta e evitando problemas como vazamentos de dados, etc.
 - Spring AI — recursos para integrar modelos de IA (LLMs).
@@ -264,7 +264,7 @@ Elas podem ser úteis quando instanciar objetos manualmente pode ser custoso ou 
 
 Sem injeção de dependências nesses casos, teriamos que criar tudo na mão, gerenciar ciclo de vida, conexões, configurações...
 
-Já com injeções nossa vida fica mais fácil, o Spring controla a criaçãoo, destruição e fornecimento dos objetos, deixando o fluxo de trabalho mais fluido e organizado. Imagina ter que reiniciar manualmente a conexão de banco de dados toda vez que um serviço é criado!
+Já com injeções nossa vida fica mais fácil, o Spring controla a criação, destruição e fornecimento dos objetos, deixando o fluxo de trabalho mais fluido e organizado. Imagina ter que reiniciar manualmente a conexão de banco de dados toda vez que um serviço é criado!
 
 ### Spring como Injetor de Dependências
 
