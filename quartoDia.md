@@ -8,8 +8,18 @@ title: Minicurso de Spring
 ## Resumo do quarto dia
 Neste dia, aprofundaremos o desenvolvimento em Spring abordando duas ferramentas fundamentais para produção: documentação automatizada com Swagger e segurança com Spring Security. Veremos como documentar endpoints de forma profissional, facilitando o consumo por outros times, e implementaremos um sistema básico de autenticação e autorização, compreendendo os princípios de segurança em aplicações web. Ao final do dia, os alunos serão capazes de documentar suas APIs e criar mecanismos de controle de acesso baseados em perfis de usuário.
 
-## Recapitulação do dia anterior
-Revisar a aula anterior
+## Revisão do terceiro dia
+
+- `Controller` e `Service`:
+  - `Controller` deve atuar apenas como um "porteiro" (recebendo e devolvendo requisições).
+  - A lógica pesada e as regras de negócio devem ficar na camada `Service` para respeitar o Princípio da Responsabilidade Única (SRP) e facilitar testes.
+- Regras de Negócio
+  - Validações e procedimentos que traduzem o "mundo real" para o código
+  - Ex: Verificar se há estoque suficiente ou se um aluno pode se matricular.
+- Fluxo de Dados no Spring:
+  - Controller $\leftrightarrow$ Service (processamento) $\leftrightarrow$ Repository (banco de dados).
+- DTOs (Data Transfer Objects)
+  - Aprendemos a usar DTOs para transportar dados de forma segura e desacoplada, evitando expor nossas Entidades diretamente na API e escondendo dados sensíveis como senhas
 
 ## Documentação com Swagger
 ### Por que é importante fazer uma boa documentação
