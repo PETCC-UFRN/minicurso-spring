@@ -395,7 +395,7 @@ Gerenciadores de projeto tem como função principal resolver dependências auto
 
 ### Maven
 
-<div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/maven-logo.png" width="60%">
+<div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/maven-logo-fundo-branco.png" width="60%">
 </div>
 
 - XML-based (usa pom.xml)
@@ -405,7 +405,7 @@ Gerenciadores de projeto tem como função principal resolver dependências auto
 
 ### Gradle
 
-<div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/Gradle-logo.png" width="60%">
+<div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/Gradle-logo-fundo-branco.png" width="60%">
 </div>
 
 - DSL baseada em Groovy/Kotlin
