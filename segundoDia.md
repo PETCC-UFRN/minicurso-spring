@@ -61,7 +61,7 @@ Nesta aula, veremos um pouco mais sobre conceitos base do desenvolvimento Back E
 
 API é uma sigla para *Application Programming Interface*, e é basicamente uma série de "regras", implementadas em uma linguagem de programação específica, que permite que diferentes sistemas se comuniquem.
 
-Mas porque precisamos dessas regras?
+Mas por que precisamos dessas regras?
 
 ## Comunicação entre sistemas e computadores
 
@@ -71,11 +71,11 @@ Sabemos que computadores interpretam dados de forma 100% lógica e literal, port
 
 O protocolo HTTP é baseado em um modelo chamado **modelo cliente-servidor**, onde um computador (cliente) faz *requisições* a outro computador (servidor). Estas requisições são as tais mensagens que estávamos falando na seção anterior, e elas possuem um formato bem específico:
 
-- 1. O método (*method*)
+1. O método (*method*)
   - O que queremos fazer
-- 2. O caminho (*path*)
+2. O caminho (*path*)
   - Onde, na aplicação, queremos fazer
-- 3. O cabeçalho (*header*)
+3. O cabeçalho (*header*)
   - Onde, na internet, queremos fazer
   - Informações adicionais
 
