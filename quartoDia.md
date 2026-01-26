@@ -35,19 +35,135 @@ Swagger é um conjunto de ferramentas open-source para documentação de APIs RE
 
 3. Swagger Codegen: Ferramenta para gerar código cliente (SDKs) em várias linguagens a partir da documentação
 
+#### Documentação de API ≠ Documentação de Código
+Apesar de terem a mesma função (documentar), servem a propósitos diferentes: uma está mais ligada a contrados de entrada e saída e a outra está mais ligada ao funcionamento interno de algum pedaço de código. Vejamos uma tabelinha para melhorar o entendimento
+
+![Comparativo entre Documentação de API e Documentação de código](assets/images/comparacao-api-x-codigo.png)
+
 ### Utilizando o Swagger no Spring Boot
 No ecossistema Spring, utilizamos principalmente a biblioteca SpringDoc OpenAPI, que integra perfeitamente com Spring Boot e gera automaticamente a documentação Swagger a partir das anotações já existentes nos controllers. A configuração básica envolve:
 
 1. Adicionar a dependência `springdoc-openapi-starter-webmvc-ui` no `pom.xml`
+```xml
+    <dependencies>
+        ...
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+        ...
+    </dependencies>
+```
 
-2. Acessar a interface em `http://localhost:8080/swagger-ui.html`
+2. Personalizar a documentação através da classe de configuração OpenAPI
 
-3. Personalizar a documentação através da classe de configuração OpenAPI
+3. Enriquecer os endpoints com anotações específicas como `@Operation`, `@Parameter` e `@ApiResponse`
 
-4. Enriquecer os endpoints com anotações específicas como `@Operation`, `@Parameter` e `@ApiResponse`
+4. Rodar a aplicação
+
+5. Acessar a interface em `http://localhost:8080/swagger-ui.html`
+
+
 
 ### Prática 
-Documentando os projetos dos dias anteriores usando swagger
+Agora que vimos a teoria, vamos para a prática. Iremos utilizar o Swagger para documentar o código do sistema de biblioteca que fizemos nos últimos dias. Aqui está um exemplo de código documentado com Swagger
+```java
+//swagger imports
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@RestController
+@RequestMapping("/livros")
+@Tag(
+    name = "LivroController",
+    description = "Endpoints para gerenciamento de livros")
+public class LivroController {
+    @Autowired
+    private LivroService livroService;
+
+//método listarLivros
+    @Operation(
+        summary = "Listar todos os livros",
+        description = "Retorna uma lista com todos os livros cadastrados")
+
+    @ApiResponse(
+        responseCode = "200",
+        description = "Lista de livros retornada com sucesso")
+    
+    @GetMapping
+    public List<Livro> listarLivros() {
+        return livroService.listarLivros();
+    }
+// método listarLivros
+
+// método cadastrarLivro
+    @Operation(
+        summary = "Cadastrar um novo livro",
+        description = "Adiciona um novo livro à biblioteca.")
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Livro cadastrado com sucesso"),
+            @ApiResponse(
+                responseCode = "422",
+                description = "Dados de entrada inválidos")
+    })
+    @PostMapping
+    public Livro cadastrarLivro(@RequestBody Livro livro) {
+        return livroService.cadastrarLivro(livro);
+    }
+// método cadastrarLivro
+
+// método alugarLivro
+    @Operation(
+        summary = "Alugar um livro",
+        description = "Realiza o aluguel de um livro para um usuário.")
+    @ApiResponses(
+        value = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Livro alugado com sucesso"),
+            @ApiResponse(
+                responseCode = "400",
+                description = "Erro ao alugar o livro")
+    })
+    @PostMapping("/alugar")
+    public ResponseEntity<?> alugarLivro(@RequestBody AluguelDTO dadosAluguel) {
+        try {
+            Livro livroAlugado = livroService.alugarLivro(dadosAluguel);
+            return ResponseEntity.ok(livroAlugado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+}
+// método alugarLivro
+```
+
+```java
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public class AluguelDTO {
+    @Schema(
+        description = "ID do usuário que vai alugar",
+        example = "5")
+    private Long usuarioId;
+    
+    @Schema(
+        description = "ID do livro a ser alugado",
+        example = "12")
+    private Long livroId;
+    
+    // getters e setters
+}
+```
+#### O que queremos que seja documentado via Swagger
+- *Controllers*
+- *DTOs*
 
 ## Segurança com Spring Security
 ### Por que é importante ter um sistema sólido
