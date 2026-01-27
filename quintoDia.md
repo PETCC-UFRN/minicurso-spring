@@ -72,4 +72,3 @@ Conto com você para continuar o meu legado. Boa sorte.
 ## Entrega do Projeto
 
 Explicar sobre como entregar o projeto
-
