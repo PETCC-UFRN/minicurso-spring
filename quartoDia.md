@@ -7,7 +7,7 @@ title: Minicurso de Spring
 
 ## Resumo do quarto dia
 
-Neste dia, aprofundaremos o desenvolvimento em Spring abordando duas ferramentas fundamentais para produção: documentação automatizada com Swagger e segurança com Spring Security. Veremos como documentar endpoints de forma profissional, facilitando o consumo por outros times, e implementaremos um sistema básico de autenticação e autorização, compreendendo os princípios de segurança em aplicações web. Ao final do dia, os alunos serão capazes de documentar suas APIs e criar mecanismos de controle de acesso baseados em perfis de usuário.
+Neste dia, aprofundaremos o desenvolvimento em Spring abordando duas ferramentas fundamentais para produção: documentação automatizada com Swagger, segurança com Spring Security e uma breve introdução a utilização de banco de dados no Spring (neste caso utilizaremos o H2). Veremos como documentar endpoints de forma profissional, facilitando o consumo por outros times, e implementaremos um sistema básico de autenticação e autorização, compreendendo os princípios de segurança em aplicações web. Ao final do dia, os alunos serão capazes de documentar suas APIs, criar mecanismos de controle de acesso baseados em perfis de usuário e estarão aptos a realizar o projeto final do minicurso.
 
 ## Revisão do terceiro dia
 
