@@ -53,15 +53,15 @@ No ecossistema Spring, utilizamos principalmente a biblioteca SpringDoc OpenAPI,
 1. Adicionar a dependência `springdoc-openapi-starter-webmvc-ui` no `pom.xml`
 
 ```xml
-    <dependencies>
-        ...
-  <dependency>
-   <groupId>org.springdoc</groupId>
-   <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-   <version>2.2.0</version>
-  </dependency>
-        ...
-    </dependencies>
+<dependencies>
+    ...
+    <dependency>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        <version>2.2.0</version>
+    </dependency>
+    ...
+</dependencies>
 ```
 
 2. Personalizar a documentação através da classe de configuração OpenAPI
@@ -179,7 +179,7 @@ public class AluguelDTO {
 
 ### Por que é importante ter um sistema sólido
 
-Uma boa segurança é uma necessidade para qualquer aplicação web que vá lidar com dados pessoais de usuários, devido a LGPD (Lei Geral de Proteção de Dados) é legalmente necessário que as organizações (ou seja, as empresas) protejam os dados pessoais de usuários no Brasil. Muitas empresas tem times específicos para lidar com a segurança, mas em muitas outras essa responsabilidade cai diretamente nos desenvolvedores, então é importante ter conhecimentos nisso.
+Uma boa segurança é uma necessidade para qualquer aplicação web que vá lidar com dados pessoais de usuários. Devido a LGPD (Lei Geral de Proteção de Dados) é legalmente necessário que as organizações (ou seja, as empresas) protejam os dados pessoais de usuários no Brasil. Muitas empresas tem times específicos para lidar com a segurança, mas em muitas outras essa responsabilidade cai diretamente nos desenvolvedores, então é importante ter conhecimentos nisso. Porém, é nosso dever informar que uma solução completa para segurança das informações de uma aplicação web real está muito além do que podemos fazer neste curso.
 
 A **Autenticação** garante que o usuário é realmente quem diz ser (através de diversas formas diferentes, sendo email e senha os mais comuns métodos de autenticação), enquanto a **Autorização** garante que os usuários tenham acesso apenas aquilo que podem fazer, impedindo que um usuário comum tenha privilégios de admnistrador, por exemplo. Seguir padrões rigorosos de **autenticação** e **autorização** é uma forma simples e direta de fazer um sistema sólido e relativamente seguro, e o Spring Security serve justamente para isso.
 
@@ -187,7 +187,7 @@ A **Autenticação** garante que o usuário é realmente quem diz ser (através 
 
 Spring Security é um framework extensível que fornece autenticação e autorização para aplicações Java. Seu funcionamento baseia-se em:
 
-1. Filtro Chain (Filter Chain): Cada requisição HTTP passa por uma cadeia de filtros de segurança
+1. Cadeia de Filtros (Filter Chain): Cada requisição HTTP passa por uma cadeia de filtros de segurança
 
 2. AuthenticationManager: Gerencia o processo de autenticação usando provedores configurados
 
@@ -197,7 +197,7 @@ Spring Security é um framework extensível que fornece autenticação e autoriz
 
 5. Configuração via SecurityFilterChain: Define regras de autorização, formulários de login, tratamento de logout e CSRF
 
-A implementação típica envolve: configurar um `SecurityFilterChain`, criar um serviço que implementa `UserDetailsService`, definir entidades de usuário com roles/permissões, e proteger endpoints baseado em roles utilizando anotações como `@PreAuthorize` ou configurações no filtro de segurança.
+A implementação típica envolve: configurar um `SecurityFilterChain`, criar um serviço que implementa `UserDetailsService`, definir entidades de usuário com permissões e proteger *endpoints* baseado em *roles* utilizando anotações como `@PreAuthorize` ou configurações no filtro de segurança.
 
 ### Prática
 
