@@ -199,11 +199,102 @@ Spring Security é um framework extensível que fornece autenticação e autoriz
 
 A implementação típica envolve: configurar um `SecurityFilterChain`, criar um serviço que implementa `UserDetailsService`, definir entidades de usuário com permissões e proteger *endpoints* baseado em *roles* utilizando anotações como `@PreAuthorize` ou configurações no filtro de segurança.
 
+1. Adicionar a dependência `spring-security` no `pom.xml`
+
+```xml
+<dependencies>
+    ...
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    ...
+</dependencies>
+```
+2. Criar um arquivo `SecurityConfig.java` com as configurações de segurança
+
+```java
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(auth -> auth
+                // Regra de Negócio: Qualquer um pode ver a documentação da API
+                .requestMatchers(
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html").permitAll()
+                
+                // Regra de Negócio: Qualquer um pode ver os livros
+                .requestMatchers(HttpMethod.GET, "/livros/**").permitAll()
+                
+                // Regra de Negócio: Só ADMIN pode alterar o banco
+                .requestMatchers(HttpMethod.POST, "/livros/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/livros/**").hasRole("ADMIN")
+                
+                // O resto exige login
+                .anyRequest().authenticated()
+            )
+            .httpBasic(Customizer.withDefaults());
+
+        return http.build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        PasswordEncoder enc = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
+        UserDetails user = User.builder()
+            .username("usuario")
+            .password(enc.encode("123456"))
+            .roles("USER")
+            .build();
+
+        UserDetails admin = User.builder()
+            .username("admin")
+            .password(enc.encode("admin123"))
+            .roles("ADMIN")
+            .build();
+
+        return new InMemoryUserDetailsManager(user, admin);
+    }
+}
+```
+
+#### Entendendo a Lógica por trás
+- `.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()`
+  - Permite que todos que acessarem os caminhos `/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html` serão liberados
+- `.requestMatchers(HttpMethod.GET, "/livros/**").permitAll()`
+  - Todos os `GETs` em `/livros/**` serão liberados
+- `.requestMatchers(HttpMethod.POST, "/livros/**").hasRole("ADMIN")`
+  - Os POSTs em `/livros/**` só podem ser feitos por `ADMINs`
+- `userDetailsService()`
+  - Esta implementação é apenas um recurso temporário para acelerar o processo. Quandoo formos para a parte de conexão com o BD, isso será explicado de uma forma mais apropriada
+
 ### Prática
 
-Aplicando spring security aos projetos dos dias anteriores
+Agora vamos ver como o Spring Security irá funcionar se aplicado nos códigos que vinham sendo desenvolvidos. Após isso, cada um irá adicionar esses mecanismos de segurança em seus projetos.
 
-### Utilizando bancos de dados no Spring
+## Utilizando bancos de dados no Spring
 
 Uma aplicação precisa de um Banco de Dados, afinal de contas não teria de onde a API puxar os dados caso contrário. Como o foco desse curso é especificamente o desenvolvimento Back-End, focaremos em ensinar somente como realizar a conexão com um banco de dados dentro do Spring, a partir do arquivo `application.properties`. Nesse exemplo estaremos usando o banco de dados H2, que é o mesmo banco de dados que utilizaremos no **Projeto Final**.
 
@@ -227,7 +318,7 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 ```
 
-Lembre-se que para o banco funcionar no seu projeto, você precisa adicionar a dependência do H2 no arquivo `pom.xml` ou `bulid.gradle`
+Lembre-se que para o banco funcionar no seu projeto, você precisa adicionar a dependência do H2 no arquivo `pom.xml` ou `build.gradle`
 
 ### Exercício
 
