@@ -298,41 +298,127 @@ Agora vamos ver como o Spring Security irá funcionar se aplicado nos códigos q
 
 Uma aplicação precisa de um Banco de Dados, afinal de contas não teria de onde a API puxar os dados caso contrário. Como o foco desse curso é especificamente o desenvolvimento Back-End, focaremos em ensinar somente como realizar a conexão com um banco de dados dentro do Spring, a partir do arquivo `application.properties`. Nesse exemplo estaremos usando o banco de dados H2, que é o mesmo banco de dados que utilizaremos no **Projeto Final**.
 
-Aqui está um exemplo de uma seção arquivo `application.properties` de configuração para o banco de dados H2:
+Para os próximos passos, vamos conectar o h2 ao projeto que vínhamos desenvolvendo.
 
-```properties
-# URL de conexão (testdb é o nome do banco)
-spring.datasource.url=jdbc:h2:mem:testdb
-spring.datasource.driverClassName=org.h2.Driver
-spring.datasource.username=sa
-spring.datasource.password=
+### 1. Verificando se o H2 está no projeto
+- A primeira coisa que precisamos fazer é verificar se nosso arquivo `pom.xml` já possui a dependência do H2.
+- Caso não esteja, baixa adicionar o seguinte código no arquivo `pom.xml`:
 
-# Ativa o console web para você ver as tabelas
-spring.h2.console.enabled=true
-# Define o caminho para acessar o console (ex: localhost:8081/h2-console)
-spring.h2.console.path=/h2-console
-
-# Cria/Atualiza as tabelas automaticamente com base nas suas classes @Entity
-spring.jpa.hibernate.ddl-auto=update
-# Mostra os comandos SQL no console para debug
-spring.jpa.show-sql=true
+```xml
+<dependencies>
+    ...
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+    ...
+</dependencies>
 ```
+- Após isso, precisamos reiniciar o maven
+    - `mvn clean install -U`
 
-Lembre-se que para o banco funcionar no seu projeto, você precisa adicionar a dependência do H2 no arquivo `pom.xml` ou `build.gradle`
+### 2. Modificando o `application.properties`
+- O `application.properties` é um arquivo onde ficam várias configurações do projeto
+- Ele está localizado em `/src/main/resources/application.properties`
+- O que estiver escrito lá **precisa** continuar. Vamos apenas adicionar novas linhas de código
+    ```properties
+    # --- 1. CONFIGURAÇÃO DA CONEXÃO ---
+    spring.datasource.url=jdbc:h2:mem:testdb
+    spring.datasource.driverClassName=org.h2.Driver
+    spring.datasource.username=sa
+    spring.datasource.password=
 
-### Exercício
+    # --- 2. CONFIGURAÇÃO DO CONSOLE (A Interface Visual) ---
+    spring.h2.console.enabled=true
+    spring.h2.console.path=/h2-console
 
-Adicionar a dependência do H2 a um projeto já existente e testar o banco com o seguinte comando:
+    # --- 3. INTEGRAÇÃO JPA ---
+    spring.jpa.hibernate.ddl-auto=update
+    spring.jpa.show-sql=true
+    ```
+#### Explicando o código
 
-```sql
-DROP TABLE IF EXISTS teste;
+- `spring.datasource.url=jdbc:h2:mem:testdb`
+  - Define a URL de conexão para o banco de dados H2 em memória.
+  - `jdbc` = protocolo Java
+  - `h2` = tipo do banco
+  - `mem` = em memória (se fechar o app, os dados somem)
+  - `testdb` = nome do banco de dados
+- `spring.datasource.driverClassName=org.h2.Driver`
+  - Driver que 'ensina' o Java a falar com o H2
+- `spring.datasource.username=sa`
+  - Usuário padrão do H2
+- `spring.datasource.password=`
+  - Senha padrão do H2. Fica em branco para facilitar os testes em aula
+- `spring.h2.console.enabled=true`
+  - Habilita a página web de gerenciamento do banco
+- `spring.h2.console.path=/h2-console`
+  - Define o link de acesso (http://localhost:8080/h2-console)
+- `spring.jpa.hibernate.ddl-auto=update`
+  - Faz o Spring olhar suas classes @Entity e criar/atualizar as tabelas automaticamente
+- `spring.jpa.show-sql=true`
+  - Mostra no terminal os comandos (INSERT, SELECT) que o Spring está fazendo por trás dos panos
 
-CREATE TABLE teste (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(255)
-);
+### 3. Ajustando `SecurityConfig.java`
+- Agora que o terreno está preparado, podemos partir para ajustes mais específicos.
+- Precisamos 'liberar' o H2 dentro do `SecurityConfig.java`, para que ele saiba que o h2 existe e não peça a senha
 
-INSERT INTO teste(titulo) VALUES 
-  ('Isso é um teste'), 
-  ('Isso é outro teste');
+```java
+//Novo import que precisa ser feito
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(AbstractHttpConfigurer::disable)
+            // Libera frames para o H2 funcionar
+            .headers(headers -> headers.frameOptions(frame -> frame.disable())) 
+            .authorizeHttpRequests(auth -> auth
+                // Adicionando o caminho para o h2-console
+                .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
+                
+                //Manter as outras rotas
+                .anyRequest().authenticated()
+            )
+            .httpBasic(Customizer.withDefaults());
+
+        return http.build();
+    }
+    //Manter o código anterior
+}
 ```
+### 4. Reiniciando o projeto
+- Caso o projeto esteja em execução durante as mudanças, é necessário reiniciá-lo, para garantir que as mudanças serão aplicadas corretamente
+   - Se o projeto estiver rodando
+     - `Ctrl+C` para parar a execução
+   - `mvn spring-boot:run` para iniciar o projeto
+   - OBS: Se necessário `mvn clean install spring-boot:run -DskipTests` para limpar absolutamente tudo antes de rodar
+
+### 5. Testar o banco
+- Acessar http://localhost:8080/h2-console
+     - JDBC URL: jdbc:h2:mem:testdb
+     - Username: sa
+     - Password:
+     - Clique em **Connect**
+     - Ver a tela de gerenciamento do BD
+   - Inserir o teste sugerido
+
+   ```sql
+   DROP TABLE IF EXISTS teste;
+
+    CREATE TABLE teste (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        titulo VARCHAR(255)
+    );
+
+    INSERT INTO teste(titulo) VALUES 
+    ('Isso é um teste'), 
+    ('Isso é outro teste');
+   ```
+### 6. BÔNUS: Fazendo a autenticação via Banco de Dados
+... 
