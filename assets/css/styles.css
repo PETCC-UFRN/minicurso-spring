@@ -40,11 +40,50 @@ a:hover{
 body {
     font-family: "Readex Pro", Lato, sans-serif;
     margin: 50px;
-    padding: 0;
+    margin: 0 auto; /* centraliza o bloco */
     background-color: #1B1F23;
     color: #FEFCFD;
-    text-align: center;
+    text-align: justify;
     font-size: 20px;
+}
+
+.home{
+    font-family: "Readex Pro", Lato, sans-serif;
+    padding-top: 50px;
+    margin: 0 auto; /* centraliza o bloco */
+    background-color: #1B1F23;
+    color: #FEFCFD;
+    text-align: justify;
+    font-size: 20px;
+    max-width: 1100px;
+
+}
+
+.home h1, .home h2 {
+    text-align: center;
+}
+
+.home ul {
+    list-style-type: disc !important;
+    padding-left: 2em !important;
+    margin: 1em 0 !important;
+    display: block;
+}
+
+.home ol {
+    list-style-type: decimal !important;
+    padding-left: 2em !important;
+    margin: 1em 0 !important;
+}
+
+.home li {
+    display: list-item !important;
+    margin: 0.5em 0;
+    text-align: left;
+}
+
+.no-bullets-list ul {
+    list-style-type: none !important;
 }
 
 .layoutConteudo{
@@ -121,7 +160,6 @@ ul{
     width: 100%;
     z-index: 1000;
 }
-
 
 .listaNavegacao{
     display: flex;
@@ -231,4 +269,11 @@ ul{
 
 .toggle-button:hover{
     color:#fff;
+}
+
+#home_content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: justify;
 }

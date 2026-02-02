@@ -1,9 +1,11 @@
 ---
-layout: default
+layout: home
 title: Aulas
 ---
 
-# {{page.title}}
+# Aulas
 
+<div class="no-bullets-list">
 {% include dias_e_temas.html %}
+</div>
 

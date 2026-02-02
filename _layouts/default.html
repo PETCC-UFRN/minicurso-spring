@@ -8,11 +8,13 @@
         <link rel="stylesheet" href="assets/css/styles.css">
         <link rel="icon" href="https://i.ibb.co/RD7XwYH/pet-logo.png" type="image/png">
     </head>
-    <body>
+    <body id="home">
         {% include nav.html %}
         <div>
             <main>
-                {{ content }}
+                <div class="home">
+                    {{ content }}
+                </div>
             </main>
         </div>
         <script src="./assets/js/sumario_script.js"></script>
