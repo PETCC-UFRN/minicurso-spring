@@ -39,7 +39,9 @@ title: Minicurso de Spring
                     <li><a href="#gradle">Gradle</a></li>
                 </ul>
             </li>
-            <li><a href="#colocando-em-prática">Colocando em Prática</a></li>
+            <li><a href="#criando-um-projeto-pela-primeira-vez">Criando um Projeto Pela Primeira Vez</a></li>
+            <li><a href="#praticando-a-camada-model">Praticando a Camada Model</a></li>
+            <li><a href="#visualizando-resultados-na-prática">Visualizando Resultados na Prática</a></li>
         </ul>
     </details>
 
@@ -237,7 +239,7 @@ O ecossistema Spring é um conjunto de mais de 20 ferramentas, módulos e projet
 - Spring Boot — Facilita iniciar aplicações rapidamente.
   - É uma versão opinativa do Spring Framework, isto é, com depedências já pré-instaladas e outras configurações já estabelecidas para tornar a inicialização de um projeto mais rápida e produtiva. No contexto da aplicação tem tanto um forte impacto no desenvolvimento quanto um impacto na velocidade de incialização, por exemplo.
 - Spring Data — Abstração para acesso a dados
-  - Traz interfaces que podem ser utilizadas para implementar muito rapidamente os métodos de acesso ao banco de dados da aplicação. No contexto da aplicação, o Spring Data seria utilizado para "puxar" do banco de dados (via *Queries*) coisas como nomes de restaurantes, avaliações, itens do cardápio de cada restaurante, etc.
+  - Traz interfaces que podem ser utiilzadas para implementar muito rapidamente os métodos de acesso ao banco de dados da aplicação. No contexto da aplicação, o Spring Data seria utilizado para "puxar" do banco de dados (via *Queries*) coisas como nomes de restaurantes, avaliações, itens do cardápio de cada restaurante, etc.
 - Spring Security — autenticação, autorização, criptografia.
   - Seria utilizado para a criação de usuários para clientes e criação de restaurantes no contexto da aplicação, tudo de forma robusta e evitando problemas como vazamentos de dados, etc.
 - Spring AI — recursos para integrar modelos de IA (LLMs).
@@ -264,7 +266,7 @@ Elas podem ser úteis quando instanciar objetos manualmente pode ser custoso ou 
 
 Sem injeção de dependências nesses casos, teriamos que criar tudo na mão, gerenciar ciclo de vida, conexões, configurações...
 
-Já com injeções nossa vida fica mais fácil, o Spring controla a criação, destruição e fornecimento dos objetos, deixando o fluxo de trabalho mais fluido e organizado. Imagina ter que reiniciar manualmente a conexão de banco de dados toda vez que um serviço é criado!
+Já com injeções nossa vida fica mais fácil, o Spring controla a criaçãoo, destruição e fornecimento dos objetos, deixando o fluxo de trabalho mais fluido e organizado. Imagina ter que reiniciar manualmente a conexão de banco de dados toda vez que um serviço é criado!
 
 ### Spring como Injetor de Dependências
 
@@ -395,7 +397,7 @@ Gerenciadores de projeto tem como função principal resolver dependências auto
 
 ### Maven
 
-<div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/maven-logo-fundo-branco.png" width="60%">
+<div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/maven-logo.png" width="60%">
 </div>
 
 - XML-based (usa pom.xml)
@@ -405,7 +407,7 @@ Gerenciadores de projeto tem como função principal resolver dependências auto
 
 ### Gradle
 
-<div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/Gradle-logo-fundo-branco.png" width="60%">
+<div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/Gradle-logo.png" width="60%">
 </div>
 
 - DSL baseada em Groovy/Kotlin
@@ -413,19 +415,86 @@ Gerenciadores de projeto tem como função principal resolver dependências auto
 - Flexível e altamente configurável
 - Muito usado em projetos modernos (Spring, Android)
 
-## Criando um Projeto na Prática
+## Criando um Projeto Pela Primeira Vez
 
 Agora que vimos toda a parte teórica finalmente podemos começar a mexer com a parte prática da coisa. Iremos aprender a como usar o [Spring Initialzr](https://start.spring.io/) para iniciar um projeto!
 
 #### Passo a Passo
 
-- 1º passo: Abra o site do Spring Initialzr clicando [aqui](https://start.spring.io/) 
-- 2º passo: Na parte "Project" selecione o gerenciador de projetos **Maven**.
-- 3º passo: Na parte Language selecione a linguagem que estamos utilizando nesse minicurso.
-- 4º passo: Na seção Group, coloque ufrn.petcc.
-- 5º passo: Na seção Artifact, coloque meu-primeiro-projeto.
-- 6º passo: Selecione **Jar** na seção Packaging.
-- 7º passo: Selecione a versão 21 do Java.
-- 8º passo: Clique em **Generate**, baixe, extraia e abra o projeto no vscode.
-- 9º passo: Abra o PrimeiroprojetoApplication.java em src/main/java/ufrn/petcc/primeiroprojeto.
-- 10º passo: Por fim, aperte no botão "Run" do vscode e seu projeto estará rodando!
+- Abra o site do Spring Initialzr clicando [aqui](https://start.spring.io/).
+- Nesse projetinho utilizaremos o **Maven** como nosso gerenciador de dependências.
+- Selecione a linguagem que estamos usando nesse minicurso.
+- Na seção Group, coloque o grupo ou instituição desejada.
+- Na seção arctifact coloque o nome do projeto.
+- Selecione **Jar** na seção Packaging.
+- Selecione a versão 21 do Java.
+- Clique em **Add Dependencies** e adicione as dependências: Spring Data JPA, H2 Database e Spring Web.
+- Clique em **Generate**, baixe, extraia e abra o projeto no vscode.
+- Abra a pasta  que contém {nomeDoSeuProjeto}Application.java em src/main/java/{group}/{arctifact}.
+- Rode `./mvnw spring-boot:run` no terminal do vscode!
+
+## Praticando a Camada Model
+
+Agora que temos o projeto aberto e rodando com sucesso nos nossos computadores, podemos finalmente colocar a mão na massa e começar a programação de verdade!
+
+Para começar a codar a camada model, precisamos primeiro organizar sua estrutura de pastas. Na mesma pasta do arquivo (nomeDoProjeto)Aplication.java crie uma pasta "model".Agora, dentro da pasta model, podemos começar a programar nossas classes que representarão as entidades da nossa pequena aplicação!
+
+Iremos criar uma classe que representará petianos, então essa classe deve conter um identificador único, nome, curso, e uma string que terá a url da imagem de perfil.
+
+Obs.: Lembrando que além de codar a classe em java padrão, precisamos nos atentar a usar as annotations do spring, então no fim teremos algo nesse modelo:
+
+```java
+@Entity
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_user")
+    private Long id;
+
+    @Column(name="nome")
+    private String name;
+
+    @Column(name="email")
+    private String email;
+}
+```
+
+<div style="text-align: center; padding-bottom: 50px; padding-top: 30px;">
+  <b>-------------Live Coding------------</b>
+</div>
+
+<div style="text-align: center; padding-bottom: 50px;">
+  <img alt="codando!!!!!" src="assets/images/codingtime.png" width="60%" style="filter: invert(1);">
+</div>
+
+Obs.: Para compilar, basta usarmos o comando `./mvnw spring-boot:run`
+
+### Visualizando Resultados na Prática
+
+Agora que fizemos uma classe da camada model, seria muito anticlimático que o método de visualizar tudo funcionando fosse apenas conseguir compilar o programa. Para dar um gostinho dos próximos dias, disponibilizaremos a camada controller e a repository desse mini projetinho, junto com um pequeno script sql que servirá para popular a tabela gerada pela classe petiano.
+
+[Clicando aqui]() vocês baixarão a camada controller, a camada repository, o script sql e o application.properties.
+
+A organização da pasta principal do projeto (a que possui o arquivo {nomeDoProjeto}Application.java) deve ficar assim:
+```
+.
+├── controller
+│   └── PetianoController.java
+├── GabaritoProjetoPrimeiroDiaApplication.java
+├── model
+│   └── Petiano.java
+└── repository
+    └── PetianoRepository.java
+```
+
+O script data.sql e o application.properties devem ficar no diretório `src/main/resources/`.
+
+Obs.: Os imports nas classes da camada controller e repository, assim como algumas configurações no application.properties devem ser modificados de acordo com o group e arctifact do projeto que você criou no spring.initialzr.
+
+Agora, podemos rodar tudo com `./mvnw spring-boot:run`.
+
+O resultado final pode ser visualizado abrindo o navegador de sua escolha e acessando o endereço `http://localhost:8080/petianos/get`.
+
+<div style="text-align: center; padding-bottom: 50px;">
+  <img alt="emoji festejando!!!!" src="assets/images/partyemoji.png" width="30%">
+</div>
