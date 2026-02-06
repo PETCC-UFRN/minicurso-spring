@@ -21,6 +21,12 @@ palheta de cores:
 #6DB33F  //verde
 */
 
+.highlight pre {
+    overflow-x: auto; /* Cria o scroll se o texto for maior que a largura */
+    white-space: pre;  /* Mantém a formatação original do código */
+    word-wrap: normal; /* Impede que as palavras quebrem sozinhas */
+}
+
 
 main{
     position: relative;
