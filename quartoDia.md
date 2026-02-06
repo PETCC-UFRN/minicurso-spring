@@ -3,11 +3,11 @@ layout: layoutConteudo
 title: Minicurso de Spring
 ---
 
-# Boas práticas e recursos úteis no desenvolvimento Spring
+# Segurança e Banco de Dados no Spring
 
 ## Resumo do quarto dia
 
-Neste dia, aprofundaremos o desenvolvimento em Spring abordando duas ferramentas fundamentais para produção: documentação automatizada com Swagger, segurança com Spring Security e uma breve introdução a utilização de banco de dados no Spring (neste caso utilizaremos o H2). Veremos como documentar endpoints de forma profissional, facilitando o consumo por outros times, e implementaremos um sistema básico de autenticação e autorização, compreendendo os princípios de segurança em aplicações web. Ao final do dia, os alunos serão capazes de documentar suas APIs, criar mecanismos de controle de acesso baseados em perfis de usuário e estarão aptos a realizar o projeto final do minicurso.
+Neste dia, aprofundaremos o desenvolvimento em Spring abordando um tópico essencial para qualquer sistema Back-End: Segurança e Banco de Dados. Utilizando a dependência Spring Security e o banco de dados H2, implementaremos um sistmea básico de autenticação e autorização, compreendendo os princípios de segurança em aplicações web. Ao final do dia, os alunos serão capazes de criar mecanismos de controle de acesso baseados em perfis de usuário e estarão aptos a realizar o projeto final do minicurso.
 
 ## Revisão do terceiro dia
 
@@ -21,159 +21,8 @@ Neste dia, aprofundaremos o desenvolvimento em Spring abordando duas ferramentas
   - Controller $\leftrightarrow$ Service (processamento) $\leftrightarrow$ Repository (banco de dados).
 - DTOs (Data Transfer Objects)
   - Aprendemos a usar DTOs para transportar dados de forma segura e desacoplada, evitando expor nossas Entidades diretamente na API e escondendo dados sensíveis como senhas
-
-## Documentação com Swagger
-
-### Por que é importante fazer uma boa documentação
-
-Imagine que você é um desenvolvedor, e foi recém contratado por uma empresa para ajudar no desenvolvimento de um sistema, substituindo um outro desenvolvedor que deixou a empresa. Como o desenvolvedor anterior não deixou nenhuma documentação, você vai precisar estudar o código cru do sistema para entender como ele está arquitetado, o que cada função e classe faz e como elas se relacionam entre si, isso deve levar um longuíssimo tempo, que poderia ser gasto trabalhando no sistema de fato, corrigindo bugs e implementando novas funcionalidades. Se ao invés disso, o antigo desenvolvedor deixasse um documento explicando detalhadamente o funcionamento do sistema, o tempo de estudo seria muito mais curto.
-
-Uma boa documentação é essencial para qualquer projeto de escala de mercado (onde vários desenvolvedores trabalham), já que facilita consideravelmente a comunicação entre times (front-end, back-end, etc) e permite uma ciclagem de desenvolvedores muito mais rápida e eficiente. Além disso, uma documentação viva (que se atualiza automaticamente com o código) previne inconsistências e desalinhamentos que frequentemente ocorrem com documentação estática.
-
-### O que é o Swagger
-
-Swagger é um conjunto de ferramentas open-source para documentação de APIs REST baseadas no padrão OpenAPI. Ele consiste em:
-
-1. Especificação OpenAPI: Formato YAML/JSON que descreve de forma estruturada todos os aspectos de uma API (endpoints, parâmetros, respostas, autenticação)
-
-2. Swagger UI: Interface web interativa que gera automaticamente uma página de documentação a partir da especificação OpenAPI, permitindo testar os endpoints diretamente no navegador
-
-3. Swagger Codegen: Ferramenta para gerar código cliente (SDKs) em várias linguagens a partir da documentação
-
-#### Documentação de API ≠ Documentação de Código
-
-Apesar de terem a mesma função (documentar), servem a propósitos diferentes: uma está mais ligada a contrados de entrada e saída e a outra está mais ligada ao funcionamento interno de algum pedaço de código. Vejamos uma tabelinha para melhorar o entendimento
-
-![Comparativo entre Documentação de API e Documentação de código](assets/images/comparacao-api-x-codigo.png)
-
-### Utilizando o Swagger no Spring Boot
-
-No ecossistema Spring, utilizamos principalmente a biblioteca SpringDoc OpenAPI, que integra perfeitamente com Spring Boot e gera automaticamente a documentação Swagger a partir das anotações já existentes nos controllers. A configuração básica envolve:
-
-1. Adicionar a dependência `springdoc-openapi-starter-webmvc-ui` no `pom.xml`
-
-```xml
-<dependencies>
-    ...
-    <dependency>
-        <groupId>org.springdoc</groupId>
-        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-        <version>2.2.0</version>
-    </dependency>
-    ...
-</dependencies>
-```
-
-2. Personalizar a documentação através da classe de configuração OpenAPI
-
-3. Enriquecer os endpoints com anotações específicas como `@Operation`, `@Parameter` e `@ApiResponse`
-
-4. Rodar a aplicação
-
-5. Acessar a interface em `http://localhost:8080/swagger-ui.html`
-
-### Prática
-
-Agora que vimos a teoria, vamos para a prática. Iremos utilizar o Swagger para documentar o código do sistema de biblioteca que fizemos nos últimos dias. Aqui está um exemplo de código documentado com Swagger
-
-```java
-//swagger imports
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-
-@RestController
-@RequestMapping("/livros")
-@Tag(
-    name = "LivroController",
-    description = "Endpoints para gerenciamento de livros")
-public class LivroController {
-    @Autowired
-    private LivroService livroService;
-
-//método listarLivros
-    @Operation(
-        summary = "Listar todos os livros",
-        description = "Retorna uma lista com todos os livros cadastrados")
-
-    @ApiResponse(
-        responseCode = "200",
-        description = "Lista de livros retornada com sucesso")
-    
-    @GetMapping
-    public List<Livro> listarLivros() {
-        return livroService.listarLivros();
-    }
-// método listarLivros
-
-// método cadastrarLivro
-    @Operation(
-        summary = "Cadastrar um novo livro",
-        description = "Adiciona um novo livro à biblioteca.")
-    @ApiResponses(
-        value = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "Livro cadastrado com sucesso"),
-            @ApiResponse(
-                responseCode = "422",
-                description = "Dados de entrada inválidos")
-    })
-    @PostMapping
-    public Livro cadastrarLivro(@RequestBody Livro livro) {
-        return livroService.cadastrarLivro(livro);
-    }
-// método cadastrarLivro
-
-// método alugarLivro
-    @Operation(
-        summary = "Alugar um livro",
-        description = "Realiza o aluguel de um livro para um usuário.")
-    @ApiResponses(
-        value = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "Livro alugado com sucesso"),
-            @ApiResponse(
-                responseCode = "400",
-                description = "Erro ao alugar o livro")
-    })
-    @PostMapping("/alugar")
-    public ResponseEntity<?> alugarLivro(@RequestBody AluguelDTO dadosAluguel) {
-        try {
-            Livro livroAlugado = livroService.alugarLivro(dadosAluguel);
-            return ResponseEntity.ok(livroAlugado);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-}
-// método alugarLivro
-```
-
-```java
-import io.swagger.v3.oas.annotations.media.Schema;
-
-public class AluguelDTO {
-    @Schema(
-        description = "ID do usuário que vai alugar",
-        example = "5")
-    private Long usuarioId;
-    
-    @Schema(
-        description = "ID do livro a ser alugado",
-        example = "12")
-    private Long livroId;
-    
-    // getters e setters
-}
-```
-
-#### O que queremos que seja documentado via Swagger
-
-- *Controllers*
-- *DTOs*
+- Documentação de Código e API
+  - Aprendemos a utilizar Swagger para documentação de API e JavaDoc para documentação de código.
 
 ## Segurança com Spring Security
 
@@ -211,6 +60,7 @@ A implementação típica envolve: configurar um `SecurityFilterChain`, criar um
     ...
 </dependencies>
 ```
+
 2. Criar um arquivo `SecurityConfig.java` com as configurações de segurança
 
 ```java
@@ -281,6 +131,7 @@ public class SecurityConfig {
 ```
 
 #### Entendendo a Lógica por trás
+
 - `.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()`
   - Permite que todos que acessarem os caminhos `/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html` serão liberados
 - `.requestMatchers(HttpMethod.GET, "/livros/**").permitAll()`
@@ -301,6 +152,7 @@ Uma aplicação precisa de um Banco de Dados, afinal de contas não teria de ond
 Para os próximos passos, vamos conectar o h2 ao projeto que vínhamos desenvolvendo.
 
 ### 1. Verificando se o H2 está no projeto
+
 - A primeira coisa que precisamos fazer é verificar se nosso arquivo `pom.xml` já possui a dependência do H2.
 - Caso não esteja, baixa adicionar o seguinte código no arquivo `pom.xml`:
 
@@ -315,13 +167,16 @@ Para os próximos passos, vamos conectar o h2 ao projeto que vínhamos desenvolv
     ...
 </dependencies>
 ```
+
 - Após isso, precisamos reiniciar o maven
-    - `mvn clean install -U`
+  - `mvn clean install -U`
 
 ### 2. Modificando o `application.properties`
+
 - O `application.properties` é um arquivo onde ficam várias configurações do projeto
 - Ele está localizado em `/src/main/resources/application.properties`
 - O que estiver escrito lá **precisa** continuar. Vamos apenas adicionar novas linhas de código
+
     ```properties
     # --- 1. CONFIGURAÇÃO DA CONEXÃO ---
     spring.datasource.url=jdbc:h2:mem:testdb
@@ -337,6 +192,7 @@ Para os próximos passos, vamos conectar o h2 ao projeto que vínhamos desenvolv
     spring.jpa.hibernate.ddl-auto=update
     spring.jpa.show-sql=true
     ```
+
 #### Explicando o código
 
 - `spring.datasource.url=jdbc:h2:mem:testdb`
@@ -354,13 +210,14 @@ Para os próximos passos, vamos conectar o h2 ao projeto que vínhamos desenvolv
 - `spring.h2.console.enabled=true`
   - Habilita a página web de gerenciamento do banco
 - `spring.h2.console.path=/h2-console`
-  - Define o link de acesso (http://localhost:8080/h2-console)
+  - Define o link de acesso (<http://localhost:8080/h2-console>)
 - `spring.jpa.hibernate.ddl-auto=update`
   - Faz o Spring olhar suas classes @Entity e criar/atualizar as tabelas automaticamente
 - `spring.jpa.show-sql=true`
   - Mostra no terminal os comandos (INSERT, SELECT) que o Spring está fazendo por trás dos panos
 
 ### 3. Ajustando `SecurityConfig.java`
+
 - Agora que o terreno está preparado, podemos partir para ajustes mais específicos.
 - Precisamos 'liberar' o H2 dentro do `SecurityConfig.java`, para que ele saiba que o h2 existe e não peça a senha
 
@@ -392,21 +249,24 @@ public class SecurityConfig {
     //Manter o código anterior
 }
 ```
+
 ### 4. Reiniciando o projeto
+
 - Caso o projeto esteja em execução durante as mudanças, é necessário reiniciá-lo, para garantir que as mudanças serão aplicadas corretamente
-   - Se o projeto estiver rodando
-     - `Ctrl+C` para parar a execução
-   - `mvn spring-boot:run` para iniciar o projeto
-   - OBS: Se necessário `mvn clean install spring-boot:run -DskipTests` para limpar absolutamente tudo antes de rodar
+  - Se o projeto estiver rodando
+    - `Ctrl+C` para parar a execução
+  - `mvn spring-boot:run` para iniciar o projeto
+  - OBS: Se necessário `mvn clean install spring-boot:run -DskipTests` para limpar absolutamente tudo antes de rodar
 
 ### 5. Testar o banco
-- Acessar http://localhost:8080/h2-console
-     - JDBC URL: jdbc:h2:mem:testdb
-     - Username: sa
-     - Password:
-     - Clique em **Connect**
-     - Ver a tela de gerenciamento do BD
-   - Inserir o teste sugerido
+
+- Acessar <http://localhost:8080/h2-console>
+  - JDBC URL: jdbc:h2:mem:testdb
+  - Username: sa
+  - Password:
+  - Clique em **Connect**
+  - Ver a tela de gerenciamento do BD
+  - Inserir o teste sugerido
 
    ```sql
    DROP TABLE IF EXISTS teste;
@@ -420,5 +280,7 @@ public class SecurityConfig {
     ('Isso é um teste'), 
     ('Isso é outro teste');
    ```
+
 ### 6. BÔNUS: Fazendo a autenticação via Banco de Dados
-... 
+
+...
