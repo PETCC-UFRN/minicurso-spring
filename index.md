@@ -5,7 +5,7 @@ title: Minicurso de Introdução ao Desenvolvimento Spring
 
 # Minicurso de Introdução ao Desenvolvimento Spring
 
-<div class="row" style="display: flex; justify-content: space-between; align-items: center; margin: 3rem 0;">
+<div class="row" style="display: flex; justify-content: center; align-items: center; margin: 3rem 0;">
   <div class="figure" style="flex: 1; text-align: center;">
     <img src="assets/images/dimap_logo.jpg" alt="dimap logo" style="display: block; max-width: 90%; margin: 0 auto; border-radius: 8px;">
   </div>
@@ -14,22 +14,19 @@ title: Minicurso de Introdução ao Desenvolvimento Spring
     <img src="assets/images/petcc_icon.png" alt="petcc logo" style="display: block; max-width: 90%; margin: 0 auto; border-radius: 8px;">
   </div>
 </div>
+<div class="row" style="display: flex; justify-content: space-between; align-items: center; margin: 3rem 0;">
+  <div class="figure" style="flex: 1; text-align: center;">
+    <img src="assets/images/spring_logo.png" alt="spring logo" style="display: block; max-width: 50%; margin: 0 auto; border-radius: 8px;">
+  </div>
+  
+  <div class="figure" style="flex: 1; text-align: center;">
+    <img src="assets/images/java_logo.png" alt="Java logo" style="display: block; max-width: 50%; margin: 0 auto; border-radius: 8px;">
+  </div>
+</div>
 
 Sejam bem-vindos ao Minicurso de **Introdução ao Desenvolvimento Spring** oferecido pelo PET-CC!
 
 Este minicurso tem como objetivo introduzir participantes sem experiência prévia ao desenvolvimento web utilizando o Spring Framework – uma plataforma poderosa e consolidada para criação de aplicações empresariais em Java.
-
-<div class="row" style="display: flex; justify-content: space-between; align-items: center; margin: -5rem 0;">
-  <div class="figure" style="flex: 1; text-align: center;">
-    <img src="assets/images/green-spring.png" alt="spring logo" style="display: block; max-width: 90%; margin: 0 auto; border-radius: 8px;">
-  </div>
-  
-  <div class="figure" style="flex: 1; text-align: center;">
-    <img src="assets/images/java.png" alt="Java logo" style="display: block; max-width: 90%; margin: 0 auto; border-radius: 8px;">
-  </div>
-</div>
-
-
 
 Ao longo do programa, percorreremos uma jornada estruturada que inclui:
 
