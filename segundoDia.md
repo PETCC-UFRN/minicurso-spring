@@ -241,3 +241,18 @@ Model é utilizado por todas as camadas.
 - Cadastro de livros
 - Listagem de livros
 - Integração com banco de dados
+
+## Como Compilar o Projeto?
+
+- mvn clean            --> limpa
+- mvn compile          --> compila
+- mvn test             --> testa
+- mvn package          --> gera JAR
+- mvn install          --> instala no .m2
+- mvn clean install    --> padrão
+- mvn clean install -X --> debug
+- mvn spring-boot:run  --> roda a app
+
+Neste curso, iremos usar, principalmente:
+- mvn clean install
+- mvn spring-boot:run
