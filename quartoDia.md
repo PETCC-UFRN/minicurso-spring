@@ -147,7 +147,7 @@ Agora vamos ver como o Spring Security irá funcionar se aplicado nos códigos q
 
 ## Utilizando bancos de dados no Spring
 
-Uma aplicação precisa de um Banco de Dados, afinal de contas não teria de onde a API puxar os dados caso contrário. Como o foco desse curso é especificamente o desenvolvimento Back-End, focaremos em ensinar somente como realizar a conexão com um banco de dados dentro do Spring, a partir do arquivo `application.properties`. Nesse exemplo estaremos usando o banco de dados H2, que é o mesmo banco de dados que utilizaremos no **Projeto Final**.
+Uma aplicação precisa de um Banco de Dados, afinal de contas não teria de onde a API puxar os dados caso contrário. Como o foco desse curso é especificamente o desenvolvimento Back-End, focaremos em ensinar somente como realizar a conexão com um banco de dados dentro do Spring, a partir do arquivo `application.properties`. Neste exemplo estaremos usando o banco de dados H2, que é o mesmo banco de dados que utilizaremos no **Projeto Final**.
 
 Para os próximos passos, vamos conectar o h2 ao projeto que vínhamos desenvolvendo.
 
@@ -281,6 +281,279 @@ public class SecurityConfig {
     ('Isso é outro teste');
    ```
 
-### 6. BÔNUS: Fazendo a autenticação via Banco de Dados
+### 6. Fazendo a autenticação via Banco de Dados
+Agora nós iremos pegar o código que vínhamos desenvolvendo e conectar tudo. O processo é simples, mas um pouco longo, então deixamos todos os códigos aqui, mas não tenham medo de nos perguntar.
+Decidimos separar em 6 etapas:
+1. Alterar a classe `Usuario`
+   ```java
+   //Novos imports
+    import java.util.Collection;
+    import java.util.List;
 
-...
+    import org.springframework.security.core.userdetails.UserDetails;
+    @Entity
+    @Table(name = "usuarios")
+    public class Usuario implements UserDetails {
+        //Removemos a atributo "nome" e adicionamos "login", "senha" e "role"
+
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+
+        @Column(nullable = false, unique = true)
+        private String username;
+
+        @Column(nullable = false)
+        private String senha;
+
+        @Column(nullable = false)
+        private String role;
+        
+        @Column(nullable = false)
+        private boolean possuiMultas;
+
+        public Usuario() {}
+
+        public Usuario(String username, String senha, String role, boolean possuiMultas) {
+            this.username = username;
+            this.senha = senha;
+            this.role = role;
+            this.possuiMultas = possuiMultas;
+        }
+
+        // --- Métodos da Interface UserDetails ---
+        @Override
+        public Collection<? extends GrantedAuthority> getAuthorities() {
+            // O Spring Security espera que a role tenha o prefixo "ROLE_"
+            // Se no banco está "ADMIN", retornamos "ROLE_ADMIN"
+            return List.of(new SimpleGrantedAuthority("ROLE_" + this.role));
+        }
+
+        @Override
+        public String getPassword() {
+            return this.senha;
+        }
+
+        @Override
+        public String getUsername() {
+            return this.username;
+        }
+
+        // Controles de expiração (vamos deixar tudo true para simplificar)
+        @Override public boolean isAccountNonExpired() { return true; }
+        @Override public boolean isAccountNonLocked() { return true; }
+        @Override public boolean isCredentialsNonExpired() { return true; }
+        @Override public boolean isEnabled() { return true; }
+
+        //getters e setters tradicionais
+    }
+   ```
+   - **OBS 1**: As alterações feitas são necessárias para que a nossa classe `Usuário` fique no padrão esperado pelo Spring Security, e assim ele possa trabalhar corretamente. Por isso que `getPassword()` existe no lugar de `getSenha()`, por exemplo.
+   - **OBS 2**: Controles de expiração são uma boa prática de mercado que não abordaremos aqui para não inflar demais o minicurso. Mas, em resumo, eles servem para bloquear/banir contas de acordo com critérios específicos.
+
+ 
+2. Alterar o `UsuarioRepository` para buscar o usuario por Login
+   ```java
+    //novo import
+    import java.util.Optional;
+
+    @Repository
+    public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+        Optional<Usuario> findByUsername(String username);
+    }
+   ```
+
+3. Criar o `AutenticacaoService`
+   - Classe que implementa `UserDetailsService`, coisa que o Spring Security procura automaticamente
+   
+   ```java
+    import org.springframework.stereotype.Service;
+    import org.springframework.security.core.userdetails.UserDetailsService;
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.security.core.userdetails.UserDetails;
+    import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+    import ufrn.petcc.meu_primeiro_projeto.Repository.UsuarioRepository;
+    @Service
+    public class AutenticacaoService  implements UserDetailsService {
+
+        @Autowired
+        private UsuarioRepository usuarioRepository;
+
+        @Override
+        public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+            return usuarioRepository.findByUsername(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado" + username));
+        }
+    }
+   ```
+
+4. Ajustar o `SecurityConfig`
+   - Remover os usuários em memória e configurar o encriptador de senhas (BCrypt)
+     - Apagar o InMemoryUserDetailsManager;
+     - Adicionar o PasswordEncoder. 
+    ```java
+        @Configuration
+        @EnableWebSecurity
+        public class SecurityConfig {
+
+            @Bean
+            public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                // --- AQUI MANTENHA TUDO DA FORMA QUE ESTAVA ---
+            }
+
+            // --- MUDANÇA AQUI ---
+            // 1. Removemos o UserDetailsService (InMemory)
+            // 2. Adicionamos o PasswordEncoder (BCrypt)
+            // O Spring Security vai achar o AutenticacaoService automaticamente.
+            
+            @Bean
+            public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+            }
+        }
+    ```
+
+5. Criar um 'Semeador' (*Data Seeder*)
+   - O banco começa vazio, então precisa-se de um código que rode ao iniciar para criar o primeiro ADMIN, senão ninguém consegue entrar
+   - Dentro de `config` crie o a classe `BancoDeDadosSeeder.java`
+
+   ```java
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.boot.CommandLineRunner;
+    import org.springframework.context.annotation.Configuration;
+    import org.springframework.security.crypto.password.PasswordEncoder;
+    import ufrn.petcc.meu_primeiro_projeto.Model.Usuario;
+    import ufrn.petcc.meu_primeiro_projeto.Repository.UsuarioRepository;
+
+    @Configuration
+    public class BancoDeDadosSeeder implements CommandLineRunner {
+
+        @Autowired
+        private UsuarioRepository usuarioRepository;
+
+        @Autowired
+        private PasswordEncoder passwordEncoder;
+
+        @Override
+        public void run(String... args) throws Exception {
+            
+            // Cadastra o ADMIN se não existir
+            if (usuarioRepository.findByUsername("admin").isEmpty()) {
+                Usuario admin = new Usuario(
+                    "admin",
+                    passwordEncoder.encode("admin123"), 
+                    "ADMIN",
+                    false
+                );
+                usuarioRepository.save(admin);
+                System.out.println("----- USUÁRIO ADMIN CRIADO -----");
+            }
+
+            // Cadastra o USER comum se não existir
+            if (usuarioRepository.findByUsername("usuario").isEmpty()) {
+                Usuario user = new Usuario(
+                    "usuario", 
+                    passwordEncoder.encode("123456"), 
+                    "USER",
+                    false
+                );
+                usuarioRepository.save(user);
+                System.out.println("----- USUÁRIO COMUM CRIADO -----");
+            }
+        }
+    }
+   ```
+
+6. Testes
+   1.  Antes de testar, vamos liberar um recurso que talvez ainda não esteja pronto
+      - Vamos adicionar algumas coisas no nosso arquivo `OpenApiConfig.java`
+      ```java
+        @Configuration
+        public class OpenApiConfig {
+
+            @Bean
+            public OpenAPI customOpenAPI() {
+                return new OpenAPI()
+                        // --- CONTEÚDO QUE SERÁ MANTIDO ---
+                        .info(new Info()
+                                .title("API da Biblioteca")
+                                .description("API para gestão de livros e alugueis")
+                                .contact(new Contact().name("Nome Sobrenome").email("seu_email@mail.com"))
+                                .version("1.0.0")) // Sem ponto e vírgula aqui
+                        
+                        // --- MUDANÇA AQUI ---
+                        // Adiciona o botão de "Cadeado" globalmente em todos os endpoints
+                        .addSecurityItem(new SecurityRequirement().addList("basicScheme"))
+                        
+                        // Define qual é o tipo de segurança (Basic Auth = Login e Senha)
+                        .components(new Components()
+                                .addSecuritySchemes("basicScheme",
+                                        new SecurityScheme()
+                                                .type(SecurityScheme.Type.HTTP)
+                                                .scheme("basic")
+                                ));
+            }
+        }
+      ```
+   2. Testar funcionamento
+      - Reinicie a aplicação
+        - Ctrl + C;
+        - `mvn spring-boot:run`
+      - Veja se o *seeder* funcionou
+        - Acesse: http://localhost:8080/h2-console
+        - Insira os dados de conexão (são os mesmos que foram utilizados anteriormente)
+        - Conecte ao H2
+        - Na caixa de comando SQL, digite o código abaixo e clique em *RUN*
+        ```sql
+        SELECT * FROM usuarios;
+        ```
+        - Se tudo tiver dado certo, você verá duas linhas: uma para admin, outra para usuario
+        - Note que a coluna senha estará cheia de caracteres estranhos (ex: $2a$10$EixZa...).
+        - Isso é o BCrypt funcionando! Se você visse "admin123" escrito limpo, estaria errado (segurança fraca).
+   3. Testar bloqueio de segurança
+      - Agora tentaremos fazer uma ação sem estarmos logados
+        - Acesse: http://localhost:8080/swagger-ui.html por uma aba anônima
+        - Vá no endpoint **POST /livros** (Cadastrar Livro)
+        - Clique em *Try it out*.
+        - Apague a sugestão e cole o seguinte JSON
+          ```json
+            {
+                "titulo": "Computing Machinery and Intelligence",
+                "autor": "Alan Turing",
+                "anoPublicado": 1950,
+                "disponivel": true
+            }
+          ```
+        - Clique em *Execute*
+          - Se aparecer um pop-up pedindo que você digite o usuário e senha, clique em *Cancel*
+      - Perceba que apareceu o código 401. Isso significa que a operação não está autorizada
+   4. Testar login como ADMIN
+      - Agora faremos um teste estando logados
+      - Na mesma aba anônima e no mesmo endpoint **POST /livros**, procure por um cadeado no canto direito
+      - Clique no cadeado e insira as credenciais
+        - Username admin
+        - Password admin123
+      - Utilize o mesmo JSON do passo anterior
+      - Cique em *Execute*
+      - Perceba que, agora, a resposta foi **200**, ou seja, estávamos autenticados e deu tudo certo
+   5. Testar permissões de usuário comum
+      - Procure novamente pelo cadeado e clique nele
+      - Clique em *logout*
+      - Insira as credenciais de usuário comum
+        - Username: usuario
+        - Password: 123456
+      - Utilize o mesmo JSON dos passos anteriores
+      - Clique em *Execute*
+      - Perceba que, agora, a resposta foi **403**, ou seja, essa ação é proibida, o que está de acordo com o que definimos em `SecurityConfig.java`
+   6. Testar persistência
+      - Volte na aba do **H2 Console**
+      - Faça login novamente, se necesário
+      - Rode o SQL abaixo
+      ```sql
+      SELECT * FROM livro;
+      ```
+      - Você deve ver o livro que cadastrou via Swagger.
+
+## Encerramento
+Agora que vimos tudo o que precisávamos para hoje, podemos seguir para o conteúdo do quinto dia, ou seja, nosso projeto.
