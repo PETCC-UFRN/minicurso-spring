@@ -130,24 +130,94 @@ OBS.: É importante lembrar que APIs RESTful são *baseadas* no protocolo HTTP (
 
 ## Camada Model
 
-- Define os objetos do domínio do sistema.
-- Representa entidades como:
-  - Usuário
-  - Produto
-  - Post
-  - Livro
-- Geralmente mapeada para o banco de dados.
-- No Spring:
-  - Anotação comum: @Entity
+A camada Model representa o domínio da aplicação, ou seja, os objetos que descrevem os dados e conceitos centrais do sistema, como Livro, Usuário, Pedido ou Produto. Ela define os atributos que cada entidade possui e, em muitos casos, é mapeada diretamente para tabelas do banco de dados por meio de anotações como @Entity, @Id e @GeneratedValue. O Model é utilizado por todas as outras camadas, pois ele é a estrutura base que trafega entre Controller, Service e Repository. Além de armazenar dados, pode conter comportamentos simples relacionados à própria entidade, mas não deve concentrar regras complexas de negócio.
+
+
+Exemplo de uma tabela criada no mysql:
+<div style="text-align: center;">
+<img src="assets/images/database_terminal.png" alt="Diagrama ilustrando a arquitetura de um sistema em camadas" width="50%">
+</div>
+
+
+Exemplo de uma 
+classe Entity Pessoas:
+```java
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity(name = "pessoas")
+@Table(name = "pessoas")
+public class Pessoas {
+  @Id
+  @GeneratedValue(strategy = Generation.Type.IDENTITY)
+  private Long id;
+  private String nome;
+  private Integer idade;
+  private String cpf;
+  private String email;
+  private String senha;
+}
+```
 
 ---
 
 ## Camada Controller
 
-- Responsável por receber requisições HTTP.
-- Exposição dos endpoints da API.
-- Chama a camada Service.
-- Retorna respostas HTTP.
+A classe Controller no Spring é o componente responsável por receber requisições HTTP, interpretar os dados enviados pelo cliente e retornar uma resposta adequada. Quando utilizamos a anotação @RestController, estamos dizendo ao Spring que aquela classe é um controlador web e que seus métodos irão retornar dados diretamente no corpo da resposta HTTP (geralmente em JSON), e não uma página HTML. Internamente, @RestController é a combinação de @Controller + @ResponseBody, o que significa que todo método já retorna o objeto serializado automaticamente.
+
+Agora, para entender stateless e stateful, precisamos falar sobre estado (state). Estado é qualquer informação que precisa ser mantida entre uma requisição e outra. Em aplicações web tradicionais, especialmente as baseadas em renderização de páginas no servidor (como JSP ou Thymeleaf), o servidor frequentemente mantém informações da sessão do usuário em memória. Isso caracteriza uma aplicação stateful.
+
+Uma aplicação stateful mantém estado no servidor entre requisições. Isso normalmente acontece através de sessões HTTP.  Exemplo:
+
+```java
+@Controller
+@SessionAttributes("usuarioLogado")
+public class LoginController {
+
+    @PostMapping("/login")
+    public String login(@RequestParam String email, Model model) {
+        model.addAttribute("usuarioLogado", email);
+        return "home";
+    }
+}
+```
+Aqui:
+ - O servidor guarda informações da sessão.
+ - Cada usuário possui um estado armazenado.
+ - O servidor precisa lembrar quem está logado.
+
+Características de aplicações stateful:
+ - Usa sessão (HttpSession)
+ - Armazena dados do usuário em memória no servidor
+ - Muito comum em aplicações web antigas baseadas em páginas
+
+Agora, uma aplicação stateless não mantém estado no servidor entre requisições. Cada requisição precisa conter todas as informações necessárias para ser processada.
+
+Exemplo com REST:
+
+```java
+@RestController
+@RequestMapping("/livros")
+public class LivroController {
+
+    @GetMapping
+    public List<Livro> listar() {
+        return service.listar();
+    }
+}
+```
+Vemos aqui:
+ - O servidor não guarda informação da requisição anterior.
+ - Cada chamada é independente.
+ - Se houver autenticação, o token (ex: JWT) vai em cada requisição no header.
+
+ Características de aplicações stateless:
+ - Não usa sessão do servidor
+ - Cada requisição é independente
+ - Mais fácil de escalar (microservices)
+ - Ideal para APIs REST
 
 ### Exemplos de métodos
 
@@ -165,8 +235,18 @@ OBS.: É importante lembrar que APIs RESTful são *baseadas* no protocolo HTTP (
 
 ## Camada Repository
 
-- Responsável pela comunicação com o banco de dados.
-- Implementa operações CRUD.
+A camada Repository é responsável pela persistência dos dados, ou seja, pela comunicação direta com o banco de dados. Ela executa operações como salvar, atualizar, buscar e remover registros. No Spring, geralmente é implementada como uma interface que estende JpaRepository, permitindo o uso de métodos prontos para CRUD sem necessidade de implementação manual. O Repository deve focar exclusivamente no acesso a dados, sem conter regras de negócio, mantendo assim a responsabilidade bem definida dentro da arquitetura em camadas.
+
+```java
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findUserById(Long id);
+    Optional<User> findUserByDocument(String document);
+    Optional<User> findUserByEmail(String email);
+}
+```
 
 ### Exemplos
 
@@ -184,9 +264,36 @@ OBS.: É importante lembrar que APIs RESTful são *baseadas* no protocolo HTTP (
 
 ## Camada Service
 
-- Implementa a lógica de negócio.
-- Centraliza regras do sistema.
-- Combina dados de várias entidades.
+A camada Service concentra a lógica de negócio do sistema. É nela que ficam as regras que definem como o sistema deve se comportar, como validações, cálculos, verificações de permissões, regras de consistência e orquestração de múltiplas operações. A Service atua como intermediária entre o Controller e o Repository, garantindo que os dados sejam processados corretamente antes de serem persistidos ou retornados. Essa separação facilita a manutenção, os testes automatizados e a evolução do sistema, pois a lógica fica centralizada em um único ponto, evitando duplicação e acoplamento excessivo.
+
+```java
+@Service
+public class UserService {
+
+    @Autowired
+    private UserRepository repository;
+
+    public void validationUserTransaction(User sender, BigDecimal amount) throws Exception {
+        if(sender.getType() != UserType.COMMON){
+            throw new Exception("User type not allowed to do a transfer");
+        }
+        if(sender.getBalance().compareTo(amount) < 0){
+            throw new Exception("User has not enough money to complete the transaction");
+        }
+
+    }
+
+    public User findUserById(Long id) throws Exception {
+        return this.repository.findUserById(id).orElseThrow(
+                () -> new Exception("User not found")
+                );
+    }
+
+    public void saveUser(User user) {
+        this.repository.save(user);
+    }
+}
+```
 
 ### Exemplo
 
@@ -241,3 +348,18 @@ Model é utilizado por todas as camadas.
 - Cadastro de livros
 - Listagem de livros
 - Integração com banco de dados
+
+## Como Compilar o Projeto?
+
+- mvn clean            --> limpa
+- mvn compile          --> compila
+- mvn test             --> testa
+- mvn package          --> gera JAR
+- mvn install          --> instala no .m2
+- mvn clean install    --> padrão
+- mvn clean install -X --> debug
+- mvn spring-boot:run  --> roda a app
+
+Neste curso, iremos usar, principalmente:
+- mvn clean install
+- mvn spring-boot:run
