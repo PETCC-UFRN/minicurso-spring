@@ -98,7 +98,9 @@ public class Main {
 
 ```
 
-**Exercício:** Para ajudar a relembrar, ou ter certeza que já conhecemos classes, crie uma classe "User" em Java com atributos e métodos à sua escolha e instancie essa classe na classe Main. Sua classe pode ser oganizada da maneira que quiser, mas coloque um atributo booleano "ativo".
+### **Exercício 1:**
+
+Para ajudar a relembrar, ou ter certeza que já conhecemos classes, crie uma classe "User" em Java com atributos e métodos à sua escolha e instancie essa classe na classe Main. Sua classe pode ser oganizada da maneira que quiser, mas coloque um atributo booleano "ativo".
 
 ### Encapsulamento
 
@@ -133,7 +135,9 @@ Aqui vai uma tabelinha que mostra quais permissões de acesso são concedidas pa
 <div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/access-modifiers.png" width="60%">
 </div>
 
-**Exercício:** Agora que finalmente revimos o conceito de encapsulamento, volte nas classes "User" que você programou mais cedo e reveja se esses conceitos foram seguidos de maneira satisfatória!
+### **Exercício 2:**
+
+Agora que finalmente revimos o conceito de encapsulamento, volte nas classes "User" que você programou mais cedo e reveja se esses conceitos foram seguidos de maneira satisfatória!
 
 #### Herança
 
@@ -168,7 +172,9 @@ public class FormaRedondaComFuroNoMeio extends FormaRedonda {
 }
 ```
 
-**Exercício:** Agora que relembramos o conceito de Herança, crie a classe "Admin" a partir da classe usuário. Objetos instanciados dessa classe devem poder chamar um método que desativa um usuário (muda o valor do atributo "Ativo" do usuário alvo para *false*).
+### **Exercício 3:**
+
+Agora que relembramos o conceito de Herança, crie a classe "Admin" a partir da classe usuário. Objetos instanciados dessa classe devem poder chamar um método que desativa um usuário (muda o valor do atributo "Ativo" do usuário alvo para *false*).
 
 #### Interfaces
 
@@ -187,7 +193,9 @@ public class CartaoCreditoService implements PagamentoService {
 }
 ```
 
-**Exercício:** A partir da interface abaixo, implemente uma classe "AdminService" que atenda todos os requisitos de "GenericUserService".
+### **Exercício 4:**
+
+A partir da interface abaixo, implemente uma classe "AdminService" que atenda todos os requisitos de "GenericUserService".
 
 ```java
 public interface GenericUserService {
@@ -476,6 +484,7 @@ Agora que fizemos uma classe da camada model, seria muito anticlimático que o m
 [Clicando aqui]() vocês baixarão a camada controller, a camada repository, o script sql e o application.properties.
 
 A organização da pasta principal do projeto (a que possui o arquivo {nomeDoProjeto}Application.java) deve ficar assim:
+
 ```
 .
 ├── controller

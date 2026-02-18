@@ -7,6 +7,8 @@ title: Minicurso de Spring
 
 <h1>Dia 2</h1>
 
+  <summary><a href="#revisão-do-primeiro-dia">Revisão do primeiro dia</a></summary>
+
   <details>
         <summary><a href="#o-que-são-apis">O que são APIs</a></summary>
         <ul>
@@ -50,6 +52,10 @@ title: Minicurso de Spring
   </div>
 <br>
 
+## Revisão do primeiro dia
+
+No dia anterior, fortificamos a base necessária de Java para este minicurso e exploramos alguns tópicos novos referentes ao Spring. A aula iniciou com uma revisão simples de Java e Programação Orientada a Objetos, e depois partiu para a introdução de maioria das ferramentas do ecossistema Spring, além de se aprofundar em especial no funcionamento do Spring Framework. Ao final da aula tivemos uma prática para ilustrar o funcionamento de um sistema com Spring e para exemplificar a camada `model`.
+
 ## Resumo do segundo dia
 
 Nesta aula, veremos um pouco mais sobre conceitos base do desenvolvimento Back End, além de iniciar nossas primeiras implementações. Começaremos a aula explicando o que são APIs e, logo após, falaremos um pouco sobre protocolo HTTP e APIs RESTful, que são o foco do nosso minicurso. Após isto, falaremos sobre duas camadas muito importantes de um sistema back-end, a camada *model* e a camada *controller*, e discorreremos sobre como o Spring lida com essas camadas.
@@ -72,12 +78,17 @@ Sabemos que computadores interpretam dados de forma 100% lógica e literal, port
 O protocolo HTTP é baseado em um modelo chamado **modelo cliente-servidor**, onde um computador (cliente) faz *requisições* a outro computador (servidor). Estas requisições são as tais mensagens que estávamos falando na seção anterior, e elas possuem um formato bem específico:
 
 1. O método (*method*)
-  - O que queremos fazer
+
+- O que queremos fazer
+
 2. O caminho (*path*)
-  - Onde, na aplicação, queremos fazer
+
+- Onde, na aplicação, queremos fazer
+
 3. O cabeçalho (*header*)
-  - Onde, na internet, queremos fazer
-  - Informações adicionais
+
+- Onde, na internet, queremos fazer
+- Informações adicionais
 
 Entender como funciona o protocolo HTTP é muito importante para aspirantes do desenvolvimento Web, pois muitos assuntos giram em torno dele nessa área, um deles sendo o tipo específico de API que iremos estudar nesse curso: a **API RESTful**.
 
@@ -132,15 +143,14 @@ OBS.: É importante lembrar que APIs RESTful são *baseadas* no protocolo HTTP (
 
 A camada Model representa o domínio da aplicação, ou seja, os objetos que descrevem os dados e conceitos centrais do sistema, como Livro, Usuário, Pedido ou Produto. Ela define os atributos que cada entidade possui e, em muitos casos, é mapeada diretamente para tabelas do banco de dados por meio de anotações como @Entity, @Id e @GeneratedValue. O Model é utilizado por todas as outras camadas, pois ele é a estrutura base que trafega entre Controller, Service e Repository. Além de armazenar dados, pode conter comportamentos simples relacionados à própria entidade, mas não deve concentrar regras complexas de negócio.
 
-
 Exemplo de uma tabela criada no mysql:
 <div style="text-align: center;">
 <img src="assets/images/database_terminal.png" alt="Diagrama ilustrando a arquitetura de um sistema em camadas" width="50%">
 </div>
 
-
-Exemplo de uma 
+Exemplo de uma
 classe Entity Pessoas:
+
 ```java
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -183,15 +193,18 @@ public class LoginController {
     }
 }
 ```
+
 Aqui:
- - O servidor guarda informações da sessão.
- - Cada usuário possui um estado armazenado.
- - O servidor precisa lembrar quem está logado.
+
+- O servidor guarda informações da sessão.
+- Cada usuário possui um estado armazenado.
+- O servidor precisa lembrar quem está logado.
 
 Características de aplicações stateful:
- - Usa sessão (HttpSession)
- - Armazena dados do usuário em memória no servidor
- - Muito comum em aplicações web antigas baseadas em páginas
+
+- Usa sessão (HttpSession)
+- Armazena dados do usuário em memória no servidor
+- Muito comum em aplicações web antigas baseadas em páginas
 
 Agora, uma aplicação stateless não mantém estado no servidor entre requisições. Cada requisição precisa conter todas as informações necessárias para ser processada.
 
@@ -208,16 +221,19 @@ public class LivroController {
     }
 }
 ```
+
 Vemos aqui:
- - O servidor não guarda informação da requisição anterior.
- - Cada chamada é independente.
- - Se houver autenticação, o token (ex: JWT) vai em cada requisição no header.
+
+- O servidor não guarda informação da requisição anterior.
+- Cada chamada é independente.
+- Se houver autenticação, o token (ex: JWT) vai em cada requisição no header.
 
  Características de aplicações stateless:
- - Não usa sessão do servidor
- - Cada requisição é independente
- - Mais fácil de escalar (microservices)
- - Ideal para APIs REST
+
+- Não usa sessão do servidor
+- Cada requisição é independente
+- Mais fácil de escalar (microservices)
+- Ideal para APIs REST
 
 ### Exemplos de métodos
 
@@ -361,5 +377,6 @@ Model é utilizado por todas as camadas.
 - mvn spring-boot:run  --> roda a app
 
 Neste curso, iremos usar, principalmente:
+
 - mvn clean install
 - mvn spring-boot:run
