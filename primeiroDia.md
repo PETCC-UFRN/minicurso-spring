@@ -61,6 +61,31 @@ Bem vindo ao minicurso **Introdução ao desenvolvimento back-end com Spring!**
 
 Esta é a primeira aula do nosso curso, portanto, será uma aula mais introdutória. Começaremos com uma revisão rápida de Java, pois é a linguagem base do framework, além de conceitos básicos de Programação Orientada a Objetos (POO). Logo após, vamos falar um pouco sobre o **Ecossistema Spring** e as diferentes aplicações das suas ferramentas, além de explicar como o Spring Framework funciona e, o mais importante: "Porque Spring Framework?". Por fim, encerraremos a aula com um exercício onde você irá iniciar o seu primeiro projeto Spring utilizando a ferramenta Spring Initializr, além de alguns extras. Boa aula!
 
+Todavia, antes de começarmos, é importante sanar ainda algumas dúvidas para aqueles que estão se iniciando agora no mundo do desenvolvimento web, em especial no que tange a onde o Spring se encaixa nesse ecossitema.
+
+# O Básico de desenvolvimento web
+
+Quando acessamos um site ou um aplicativo, estamos interagindo com um sistema que, na maioria das vezes, é dividido em duas partes principais, que se comunicam entre si, quais sejam o Front (à frente) e o Back (atrás).
+
+## Front-End (O lado do Cliente)
+
+É a interface gráfica, tudo aquilo que o usuário vê, clica e interage. Telas, botões, formulários, animações e o design da página. Geralmente é construído com HTML, CSS e JavaScript (junto com ferramentas como React, Angular ou Vue).
+
+## Back-End (O lado do Servidor)
+
+É o responsável por processar as regras de negócio, buscar ou salvar informações no banco de dados, garantir a segurança, autenticar usuários e devolver a informação processada para o Front-End exibir. É exatamente no Back-End que o Java e o Spring atuam!
+
+## O que é um Framework?
+
+Um Framework é um conjunto de códigos, bibliotecas e padrões de arquitetura pré-prontos que servem como um esqueleto ou fundação para o seu projeto.
+
+### Por que usar um framework?
+
+- Produtividade: Funcionalidades complexas e repetitivas, como conectar ao banco de dados, configurar rotas web ou lidar com segurança, já vêm prontas ou semi-prontas.
+- Padronização: Um framework impõe uma estrutura lógica. Isso ajuda a manter um padrão de código organizado.
+- Segurança e Estabilidade: Frameworks de mercado são utilizados e testado.
+- Foco no Conteúdo: m vez de gastar dias configurando servidores e conexões, você pode gastar seu tempo programando funcionalidades da sua aplicação.
+
 # Revisando Java
 
 Antes de começarmos a estudar Spring é mais do que necessário darmos uma revisada na linguagem na qual o Spring se baseia, o Java!
