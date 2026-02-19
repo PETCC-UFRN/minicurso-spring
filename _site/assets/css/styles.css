@@ -283,3 +283,8 @@ ul{
     padding: 20px;
     text-align: justify;
 }
+
+a.inactive {
+  color: #496B33 !important;
+  pointer-events: none;
+}
