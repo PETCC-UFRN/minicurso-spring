@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Minicurso de Spring</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="./assets/css/styles.css">
+        <link rel="stylesheet" href="/minicurso-linux-git/assets/css/syntax.css">
+        <link rel="icon" href="https://i.ibb.co/RD7XwYH/pet-logo.png" type="image/png">
+    </head>
+    <body class="layoutConteudo">
+        <header>
+    <nav class="menuPrincipal">
+        <ul class="listaNavegacao">
+            <li>
+                <a href="index">/home</a>
+            </li>
+            <li>
+                <a href="aulas">/aulas</a>
+            </li> 
+            <li>
+                <a href="sobre">/sobre</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+
+        <div>
+            <main>
+                <div class="conteudo-justificado">
+                    <h1 id="regras-de-negócio-e-documentação">Regras de negócio e Documentação</h1>
+
+<h2 id="resumo-do-terceiro-dia">Resumo do terceiro dia</h2>
+
+<p>Hoje iremos nos aprofundar um pouco mais no desenvolvimento de um sistema com Spring, entendendo um pouco mais sobre como funciona a camada <code class="language-plaintext highlighter-rouge">Service</code>, bem como entender a importância da Documentação. Ao final dessa aula você deve compreender o papel da camada bem como entender como implementar regras de negócio e entender como é feita a comunicação entre a camada <code class="language-plaintext highlighter-rouge">Service</code> e a camada <code class="language-plaintext highlighter-rouge">Controller</code>, além de como documentar ambas.</p>
+
+<h2 id="revisão-do-segundo-dia">Revisão do segundo dia</h2>
+
+<p>No segundo dia aprendemos o que é e como funciona a camada <code class="language-plaintext highlighter-rouge">Controller</code>, portanto vimos que ela cumpre o papel de um “porteiro”, que valida a entrada e direciona o tráfego de dados dentro do sistema. Sendo assim, uma vez que já estamos lidando com os dados, por que não inserir logo a lógica na camada <code class="language-plaintext highlighter-rouge">Controller</code>?</p>
+
+<p>Existem algumas respostas à essa pergunta, mas as principais são que a inserção da lógica direto na camada <code class="language-plaintext highlighter-rouge">Controller</code> violaria o SRP (Princípio da Responsabilidade Única) e tornaria os testes e o reuso de certas partes do código bem mais desafiadores.</p>
+
+<p>Sendo assim, precisamos de uma nova camada para as regras de negócio da aplicação, e esta é a camada <code class="language-plaintext highlighter-rouge">Service</code>.</p>
+
+<h2 id="camada-service">Camada <code class="language-plaintext highlighter-rouge">Service</code></h2>
+
+<h3 id="o-que-são-regras-de-negócio">O que são regras de negócio</h3>
+
+<p>Regras de negócio são as condições, restrições e procedimentos lógicos que definem como uma empresa opera e como os dados devem ser manipulados para atender aos objetivos da organização. No contexto de software, elas representam o “mundo real” traduzido em código, como: determinar quem tem direito a um desconto, validar se um estoque é suficiente para uma venda ou impedir que um aluno se matricule em duas disciplinas no mesmo horário, garantindo que a aplicação não apenas armazene dados, mas siga fielmente as normas e processos que regem aquele modelo de negócio específico.</p>
+
+<h3 id="fluxo-de-dados-em-uma-aplicação-spring">Fluxo de dados em uma aplicação Spring</h3>
+
+<p>O fluxo de dados dentro de uma aplicação Spring se dá dessa forma:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Controller</code> recebe uma requisição do usuário e manda dados para <code class="language-plaintext highlighter-rouge">Service</code>;</li>
+  <li><code class="language-plaintext highlighter-rouge">Service</code> extrai informações dos dados vindos do <code class="language-plaintext highlighter-rouge">Controller</code> e realiza comunicações com <code class="language-plaintext highlighter-rouge">Repository</code> (buscas, etc)</li>
+  <li><code class="language-plaintext highlighter-rouge">Repository</code> retorna uma Entidade ao <code class="language-plaintext highlighter-rouge">Service</code> depois da busca;</li>
+  <li><code class="language-plaintext highlighter-rouge">Service</code> processa e realiza operações entre os dados vindos do <code class="language-plaintext highlighter-rouge">Controller</code> e os dados vindos do <code class="language-plaintext highlighter-rouge">Repository</code>;</li>
+  <li><code class="language-plaintext highlighter-rouge">Service</code> manda os dados processados para o <code class="language-plaintext highlighter-rouge">Controller</code> e, se necessário, manda os dados para o <code class="language-plaintext highlighter-rouge">Repository</code> salvar no banco;</li>
+  <li><code class="language-plaintext highlighter-rouge">Controller</code> devolve os dados processados em resposta ao usuário.</li>
+</ul>
+
+<p>Sendo assim, a camada <code class="language-plaintext highlighter-rouge">Service</code> cumpre um papel de constante comunicação entre as camadas <code class="language-plaintext highlighter-rouge">Controller</code> e <code class="language-plaintext highlighter-rouge">Repository</code> assumindo uma posição quase que “central” dentro do fluxo de dados do sistema. Sendo assim, deve-se buscar o maior nível de eficiência e segurança na manipulação dos dados, e por isso um conceito muito importante para a camada <code class="language-plaintext highlighter-rouge">Service</code> são as classes DTO.</p>
+
+<h3 id="classes-dto-data-transfer-object">Classes DTO (Data Transfer Object)</h3>
+
+<p>As classes DTO (Data Transfer Object) são objetos simples, sem lógica de negócio, utilizados exclusivamente para transportar dados entre diferentes camadas de um sistema ou entre o cliente e o servidor. No Spring, eles funcionam como “pacotes” que carregam apenas as informações necessárias para uma operação específica, evitando que a estrutura interna do banco de dados (as Entidades) seja exposta diretamente na API.</p>
+
+<p>Sua principal serventia é garantir o desacoplamento e a segurança da aplicação. Com um DTO, você pode filtrar quais campos deseja receber ou enviar (ocultando senhas, por exemplo), agrupar dados de múltiplas fontes em um único objeto e adaptar o formato dos dados para o que o front-end espera, sem precisar alterar a tabela original no banco de dados.</p>
+
+<p>Aqui está um exemplo de uso de uma classe DTO:</p>
+
+<h3 id="classe-user">Classe User</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Entity</span>
+<span class="nd">@Table</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">"usuarios"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="o">{</span>
+
+    <span class="nd">@Id</span>
+    <span class="nd">@GeneratedValue</span><span class="o">(</span><span class="n">strategy</span> <span class="o">=</span> <span class="nc">GenerationType</span><span class="o">.</span><span class="na">IDENTITY</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="nc">Long</span> <span class="n">id</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">nome</span><span class="o">;</span>
+    
+    <span class="nd">@Column</span><span class="o">(</span><span class="n">unique</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">email</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">senha</span><span class="o">;</span> <span class="c1">// dado sensível</span>
+
+    <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">ativo</span><span class="o">;</span>
+    
+    <span class="kd">private</span> <span class="nc">LocalDateTime</span> <span class="n">dataCriacao</span><span class="o">;</span> <span class="c1">// dado inútil para o usuaŕio</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="dto-da-classe-user">DTO da Classe User</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserDTO</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="nc">Long</span> <span class="n">id</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">nome</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">email</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">UserDTO</span><span class="o">(</span><span class="nc">User</span> <span class="n">user</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="na">getId</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">nome</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="na">getNome</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">email</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="na">getEmail</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Sendo assim, vamos ver agora um exemplo prático utilizando tudo que foi aprendido até agora:</p>
+
+<h3 id="exemplo-prático-">Exemplo prático <!--Podemos talvez fazer essa parte como live coding--></h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Service</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AutenticacaoService</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">UsuarioRepository</span> <span class="n">usuarioRepository</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">PasswordEncoder</span> <span class="n">passwordEncoder</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">TokenService</span> <span class="n">tokenService</span><span class="o">;</span>
+
+    <span class="c1">// Construtor para injeção dos dados da camada Repository </span>
+    <span class="kd">public</span> <span class="nf">AutenticacaoService</span><span class="o">(</span><span class="nc">UsuarioRepository</span> <span class="n">usuarioRepository</span><span class="o">,</span> 
+                               <span class="nc">PasswordEncoder</span> <span class="n">passwordEncoder</span><span class="o">,</span> 
+                               <span class="nc">TokenService</span> <span class="n">tokenService</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">usuarioRepository</span> <span class="o">=</span> <span class="n">usuarioRepository</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">passwordEncoder</span> <span class="o">=</span> <span class="n">passwordEncoder</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">tokenService</span> <span class="o">=</span> <span class="n">tokenService</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">realizarLogin</span><span class="o">(</span><span class="nc">LoginDTO</span> <span class="n">dados</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// 1. o usuário deve existir no banco (lança uma exceção caso contrário)</span>
+        <span class="nc">Usuario</span> <span class="n">usuario</span> <span class="o">=</span> <span class="n">usuarioRepository</span><span class="o">.</span><span class="na">findByEmail</span><span class="o">(</span><span class="n">dados</span><span class="o">.</span><span class="na">getEmail</span><span class="o">())</span>
+                <span class="o">.</span><span class="na">orElseThrow</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="k">new</span> <span class="nc">AuthenticationException</span><span class="o">(</span>
+      <span class="s">"Usuário não encontrado."</span><span class="o">));</span>
+
+        <span class="c1">// 2. a senha enviada deve coincidir com o hash do banco </span>
+        <span class="c1">//(lança uma exceção caso contrário)</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="n">passwordEncoder</span><span class="o">.</span><span class="na">matches</span><span class="o">(</span><span class="n">dados</span><span class="o">.</span><span class="na">getSenha</span><span class="o">(),</span> <span class="n">usuario</span><span class="o">.</span><span class="na">getSenha</span><span class="o">()))</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">AuthenticationException</span><span class="o">(</span><span class="s">"Senha incorreta."</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="c1">// 3. usuários bloqueados não podem logar (lança uma exceção caso contrário)</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="n">usuario</span><span class="o">.</span><span class="na">isAtivo</span><span class="o">())</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">BusinessException</span><span class="o">(</span><span class="s">"Sua conta está inativa.
+        Entre em contato com o suporte."</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="c1">// se tudo estiver OK, gera o token (JWT ou similar)</span>
+        <span class="k">return</span> <span class="n">tokenService</span><span class="o">.</span><span class="na">gerarToken</span><span class="o">(</span><span class="n">usuario</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="documentação-de-projeto">Documentação de projeto</h2>
+
+<p>Note como em vários pontos que representam regras de negócio dentro do código, foram inseridos comentários explicando como a lógica implementada se relaciona com essas regras. Obviamente, se tratando de um exemplo didático, foram inseridos mais comentários do que normalmente você encontraria em um código qualquer, mas uma coisa é fato: se tratando de lógica de negócio, diferentes negócios/aplicações podem implementar uma mesma lógica de uma forma completamente diferente, e para isso precisamos de uma documentação que deixe claro como estamos realizando essa implementação.</p>
+
+<p>Acontece que documentar o código com comentários simples ao longo do arquivo pode dificultar o entendimento geral do sistema todo, visto que você precisa acessar cada arquivo do sistema para entender seu funcionamento. Sendo assim, vamos utilizar duas ferramentas diferentes: JavaDoc (Documentação de Código) e Swagger (Documentação de API). Mas antes, vamos entender a diferença entre ambas:</p>
+
+<h4 id="documentação-de-api--documentação-de-código">Documentação de API ≠ Documentação de Código</h4>
+
+<p>Apesar de terem a mesma função (documentar), servem a propósitos diferentes: uma está mais ligada a contrados de entrada e saída e a outra está mais ligada ao funcionamento interno de algum pedaço de código. Vejamos uma tabelinha para melhorar o entendimento</p>
+
+<p><img src="/minicurso-linux-git/assets/images/comparacao-api-x-codigo.png" alt="Comparativo entre Documentação de API e Documentação de código" /></p>
+
+<p>Entretanto, ambas as documentações acabam tendo o mesmo propósito de ilustrar como funcionam as regras de seu negócio. Um exemplo simples seria a documentação de dois sistemas sobre seu estilo de autenticação. Ambos os sistemas provavelmente usariam um endpoint muito parecido como <code class="language-plaintext highlighter-rouge">/api/auth/sign-in</code>, mas poderiam ter lógicas de login completamente diferentes (um usa email, o outro cpf, por exemplo). Sendo assim é importante que a documentação da API funcione também para deixar claras as regras de negócio.</p>
+
+<p>Vamos então aprender como utilizar as ferramentas citadas para nossa documentação.</p>
+
+<h2 id="documentação-com-javadoc">Documentação com JavaDoc</h2>
+
+<h3 id="o-que-é-o-javadoc">O que é o JavaDoc</h3>
+
+<p>JavaDoc é um gerador de documentação nativo do JDK a partir de estilos específicos de blocos de comentário e tags dentro do código. Ele gera um arquivo html que pode ser acessado para visualizar a documentação do sistema.</p>
+
+<h3 id="adicionando-o-javadoc-ao-spring">Adicionando o JavaDoc ao Spring</h3>
+
+<p>O JavaDoc é nativo do JDK mas pode ser integrado ao processo de compilação de um projeto Spring, basta adicionar o seguinte à seu arquivo de gerenciamento de projeto (no nosso caso, pom.xml):</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;build&gt;</span>
+    <span class="nt">&lt;plugins&gt;</span>
+        <span class="nt">&lt;plugin&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>maven-javadoc-plugin<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>3.6.0<span class="nt">&lt;/version&gt;</span>
+            <span class="nt">&lt;configuration&gt;</span>
+                <span class="nt">&lt;show&gt;</span>private<span class="nt">&lt;/show&gt;</span> <span class="nt">&lt;/configuration&gt;</span>
+        <span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;/plugins&gt;</span>
+<span class="nt">&lt;/build&gt;</span>
+</code></pre></div></div>
+
+<h3 id="principais-tags-do-javadoc">Principais tags do JavaDoc</h3>
+
+<ul>
+  <li>
+    <p>@param : Descreve um parâmetro de entrada do método.</p>
+  </li>
+  <li>
+    <p>@return : Explica o que o método retorna.</p>
+  </li>
+  <li>
+    <p>@throws : Indica quais exceções podem ser lançadas e por quê.</p>
+  </li>
+  <li>
+    <p>@see : Cria um link “Veja também” para outra parte do código.</p>
+  </li>
+  <li>
+    <p>@link : Cria um link inline para outra classe ou método.</p>
+  </li>
+</ul>
+
+<h3 id="exemplo-prático">Exemplo Prático</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * Serviço responsável pelo fluxo de autenticação e segurança dos usuários.
+ * Esta classe valida credenciais, verifica o status da conta e emite tokens de acesso.
+ * * @author Seu Nome
+ * @version 1.0
+ */</span>
+<span class="nd">@Service</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AutenticacaoService</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">UsuarioRepository</span> <span class="n">usuarioRepository</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">PasswordEncoder</span> <span class="n">passwordEncoder</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">TokenService</span> <span class="n">tokenService</span><span class="o">;</span>
+
+    <span class="cm">/**
+     * Construtor para injeção de dependências.
+     * * @param usuarioRepository Repositório para consulta de dados do usuário.
+     * @param passwordEncoder Componente para validação de hashes de senha.
+     * @param tokenService Serviço responsável pela geração de JWT.
+     */</span>
+    <span class="kd">public</span> <span class="nf">AutenticacaoService</span><span class="o">(</span><span class="nc">UsuarioRepository</span> <span class="n">usuarioRepository</span><span class="o">,</span> 
+                               <span class="nc">PasswordEncoder</span> <span class="n">passwordEncoder</span><span class="o">,</span> 
+                               <span class="nc">TokenService</span> <span class="n">tokenService</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">usuarioRepository</span> <span class="o">=</span> <span class="n">usuarioRepository</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">passwordEncoder</span> <span class="o">=</span> <span class="n">passwordEncoder</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">tokenService</span> <span class="o">=</span> <span class="n">tokenService</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**
+     * Realiza a autenticação de um usuário no sistema.
+     * O processo valida a existência do e-mail, a integridade da senha e se a 
+     * conta do usuário possui permissão de acesso (ativa).
+     * * @param dados Objeto DTO contendo email e senha para tentativa de login.
+     * @return String contendo o token de autenticação gerado (ex: JWT).
+     * @throws AuthenticationException Caso o e-mail não exista ou a senha seja inválida.
+     * @throws BusinessException Caso o usuário esteja com o status inativo.
+     * @see TokenService#gerarToken(Usuario)
+     */</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">realizarLogin</span><span class="o">(</span><span class="nc">LoginDTO</span> <span class="n">dados</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// 1. Validação de existência</span>
+        <span class="nc">Usuario</span> <span class="n">usuario</span> <span class="o">=</span> <span class="n">usuarioRepository</span><span class="o">.</span><span class="na">findByEmail</span><span class="o">(</span><span class="n">dados</span><span class="o">.</span><span class="na">getEmail</span><span class="o">())</span>
+                <span class="o">.</span><span class="na">orElseThrow</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="k">new</span> <span class="nc">AuthenticationException</span><span class="o">(</span><span class="s">"Usuário não encontrado."</span><span class="o">));</span>
+
+        <span class="c1">// 2. Validação de senha</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="n">passwordEncoder</span><span class="o">.</span><span class="na">matches</span><span class="o">(</span><span class="n">dados</span><span class="o">.</span><span class="na">getSenha</span><span class="o">(),</span> <span class="n">usuario</span><span class="o">.</span><span class="na">getSenha</span><span class="o">()))</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">AuthenticationException</span><span class="o">(</span><span class="s">"Senha incorreta."</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="c1">// 3. Validação de regra de negócio (status da conta)</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="n">usuario</span><span class="o">.</span><span class="na">isAtivo</span><span class="o">())</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">BusinessException</span><span class="o">(</span><span class="s">"Sua conta está inativa. Entre em contato com o suporte."</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">tokenService</span><span class="o">.</span><span class="na">gerarToken</span><span class="o">(</span><span class="n">usuario</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Você pode visualizar a documentação rodando o seguinte comando no diretório raiz do projeto:</p>
+
+<div class="language-terminal highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">mvn javadoc:javadoc
+</span></code></pre></div></div>
+
+<h2 id="documentação-com-swagger">Documentação com Swagger</h2>
+
+<h3 id="o-que-é-o-swagger">O que é o Swagger</h3>
+
+<p>Swagger é um conjunto de ferramentas open-source para documentação de APIs REST baseadas no padrão OpenAPI. Ele consiste em:</p>
+
+<ol>
+  <li>
+    <p>Especificação OpenAPI: Formato YAML/JSON que descreve de forma estruturada todos os aspectos de uma API (endpoints, parâmetros, respostas, autenticação)</p>
+  </li>
+  <li>
+    <p>Swagger UI: Interface web interativa que gera automaticamente uma página de documentação a partir da especificação OpenAPI, permitindo testar os endpoints diretamente no navegador</p>
+  </li>
+  <li>
+    <p>Swagger Codegen: Ferramenta para gerar código cliente (SDKs) em várias linguagens a partir da documentação</p>
+  </li>
+</ol>
+
+<h3 id="utilizando-o-swagger-no-spring-boot">Utilizando o Swagger no Spring Boot</h3>
+
+<p>No ecossistema Spring, utilizamos principalmente a biblioteca SpringDoc OpenAPI, que integra perfeitamente com Spring Boot e gera automaticamente a documentação Swagger a partir das anotações já existentes nos controllers. A configuração básica envolve:</p>
+
+<ol>
+  <li>Adicionar a dependência <code class="language-plaintext highlighter-rouge">springdoc-openapi-starter-webmvc-ui</code> no <code class="language-plaintext highlighter-rouge">pom.xml</code></li>
+</ol>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependencies&gt;</span>
+    ...
+    <span class="nt">&lt;dependency&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.springdoc<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>springdoc-openapi-starter-webmvc-ui<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>2.2.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    ...
+<span class="nt">&lt;/dependencies&gt;</span>
+</code></pre></div></div>
+
+<ol>
+  <li>
+    <p>Personalizar a documentação através da classe de configuração OpenAPI</p>
+  </li>
+  <li>
+    <p>Enriquecer os endpoints com anotações específicas como <code class="language-plaintext highlighter-rouge">@Operation</code>, <code class="language-plaintext highlighter-rouge">@Parameter</code> e <code class="language-plaintext highlighter-rouge">@ApiResponse</code></p>
+  </li>
+  <li>
+    <p>Rodar a aplicação</p>
+  </li>
+  <li>
+    <p>Acessar a interface em <code class="language-plaintext highlighter-rouge">http://localhost:8080/swagger-ui.html</code></p>
+  </li>
+</ol>
+
+<h2 id="exercício-prático-live-coding-">Exercício Prático (Live Coding) <!--Acredito que esse exemplo ainda vai ser adaptado para a ideia do restaurante, que é o projeto final--></h2>
+
+<p>Daremos continuidade ao exercício feito no final do último dia, adicionando uma regra de negócio para a biblioteca e documentando seu código e sua API.</p>
+
+<h3 id="regra-de-negócio">Regra de negócio</h3>
+
+<ul>
+  <li>Um usuário não pode alugar um livro se tiver multas pendentes.</li>
+  <li>Um usuário não pode alugar um livro indisponível.</li>
+</ul>
+
+<!--Spoiler box clicável para caso o aluno queira saber o que fazer-->
+<details>
+<summary><strong>Dica</strong></summary>
+
+<ul>
+  <li>Criar o <code>LivroService</code></li>
+  <li>Injetar o <code>LivroRepository</code></li>
+  <li>Criar o método <code>AlugarLivro()</code></li>
+  <li>Verificar se o usuário possui multas pendentes</li>
+  <li>Verificar se o livro está disponível</li>
+  <li>Lançar exceção ou retornar erro caso a regra falhe</li>
+</ul>
+
+</details>
+
+<h3 id="funcionalidades-esperadas-ao-fim-do-exercício">Funcionalidades esperadas ao fim do exercício</h3>
+
+<ul>
+  <li>Cadastro de livros</li>
+  <li>Listagem de livros</li>
+  <li>Aluguel de livros
+    <ul>
+      <li>Com regras de negócio para checagem de erros</li>
+    </ul>
+  </li>
+  <li>Integração com banco de dados</li>
+  <li>Documentação dos endpoints com Swagger</li>
+  <li>Documentação do código com JavaDoc</li>
+</ul>
+
+<h3 id="exemplo-de-código-documentado-com-swagger">Exemplo de código documentado com Swagger</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//swagger imports</span>
+<span class="kn">import</span> <span class="nn">io.swagger.v3.oas.annotations.Operation</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">io.swagger.v3.oas.annotations.responses.ApiResponse</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">io.swagger.v3.oas.annotations.responses.ApiResponses</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">io.swagger.v3.oas.annotations.tags.Tag</span><span class="o">;</span>
+
+<span class="nd">@RestController</span>
+<span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/livros"</span><span class="o">)</span>
+<span class="nd">@Tag</span><span class="o">(</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">"LivroController"</span><span class="o">,</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">"Endpoints para gerenciamento de livros"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">LivroController</span> <span class="o">{</span>
+    <span class="nd">@Autowired</span>
+    <span class="kd">private</span> <span class="nc">LivroService</span> <span class="n">livroService</span><span class="o">;</span>
+
+<span class="c1">// método alugarLivro</span>
+    <span class="nd">@Operation</span><span class="o">(</span>
+        <span class="n">summary</span> <span class="o">=</span> <span class="s">"Alugar um livro"</span><span class="o">,</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s">"Realiza o aluguel de um livro para um usuário."</span><span class="o">)</span>
+    <span class="nd">@ApiResponses</span><span class="o">(</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="o">{</span>
+            <span class="nd">@ApiResponse</span><span class="o">(</span>
+                <span class="n">responseCode</span> <span class="o">=</span> <span class="s">"200"</span><span class="o">,</span>
+                <span class="n">description</span> <span class="o">=</span> <span class="s">"Livro alugado com sucesso"</span><span class="o">),</span>
+            <span class="nd">@ApiResponse</span><span class="o">(</span>
+                <span class="n">responseCode</span> <span class="o">=</span> <span class="s">"400"</span><span class="o">,</span>
+                <span class="n">description</span> <span class="o">=</span> <span class="s">"Erro ao alugar o livro"</span><span class="o">)</span>
+    <span class="o">})</span>
+    <span class="nd">@PostMapping</span><span class="o">(</span><span class="s">"/alugar"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">ResponseEntity</span><span class="o">&lt;?&gt;</span> <span class="n">alugarLivro</span><span class="o">(</span><span class="nd">@RequestBody</span> <span class="nc">AluguelDTO</span> <span class="n">dadosAluguel</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">Livro</span> <span class="n">livroAlugado</span> <span class="o">=</span> <span class="n">livroService</span><span class="o">.</span><span class="na">alugarLivro</span><span class="o">(</span><span class="n">dadosAluguel</span><span class="o">);</span>
+            <span class="k">return</span> <span class="nc">ResponseEntity</span><span class="o">.</span><span class="na">ok</span><span class="o">(</span><span class="n">livroAlugado</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">RuntimeException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="nc">ResponseEntity</span><span class="o">.</span><span class="na">badRequest</span><span class="o">().</span><span class="na">body</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// método alugarLivro</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">io.swagger.v3.oas.annotations.media.Schema</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AluguelDTO</span> <span class="o">{</span>
+    <span class="nd">@Schema</span><span class="o">(</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s">"ID do usuário que vai alugar"</span><span class="o">,</span>
+        <span class="n">example</span> <span class="o">=</span> <span class="s">"5"</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="nc">Long</span> <span class="n">usuarioId</span><span class="o">;</span>
+    
+    <span class="nd">@Schema</span><span class="o">(</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s">"ID do livro a ser alugado"</span><span class="o">,</span>
+        <span class="n">example</span> <span class="o">=</span> <span class="s">"12"</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="nc">Long</span> <span class="n">livroId</span><span class="o">;</span>
+    
+    <span class="c1">// getters e setters</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+                </div>
+            </main>
+            <script src="./assets/js/sumario_script.js"></script>
+        </div>
+    </body>
+</html>
+
+<script type="text/javascript">
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  },
+  options: {
+    ignoreHtmlClass: 'highlight|code'
+  }
+};
+</script>
+<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

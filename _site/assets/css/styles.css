@@ -1,0 +1,285 @@
+/* Copyright (c) 2017 Anish Athalye */
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro);
+@import url(https://fonts.googleapis.com/css?family=Source+Code+Pro);
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@160..700&display=swap');
+
+
+*{
+  transition: .3s;
+}
+
+@keyframes slip-fade{
+    0%{opacity:0;top:20px;}
+    100%{opacity:1;top:0px;}
+}
+
+/*
+palheta de cores:
+#1B1F23  //preto azulado
+#FEFCFD  //branco
+#6DB33F  //verde
+*/
+
+.highlight pre {
+    overflow-x: auto; /* Cria o scroll se o texto for maior que a largura */
+    white-space: pre;  /* Mantém a formatação original do código */
+    word-wrap: normal; /* Impede que as palavras quebrem sozinhas */
+}
+
+
+main{
+    position: relative;
+    animation: slip-fade 0.75s;
+}
+
+a{
+  text-decoration:none;
+  color:#6DB33F;
+}
+
+a:hover{
+  color:#FEFCFD;
+}
+
+
+body {
+    font-family: "Readex Pro", Lato, sans-serif;
+    margin: 50px;
+    margin: 0 auto; /* centraliza o bloco */
+    background-color: #1B1F23;
+    color: #FEFCFD;
+    text-align: justify;
+    font-size: 20px;
+}
+
+.home{
+    font-family: "Readex Pro", Lato, sans-serif;
+    padding-top: 50px;
+    margin: 0 auto; /* centraliza o bloco */
+    background-color: #1B1F23;
+    color: #FEFCFD;
+    text-align: justify;
+    font-size: 20px;
+    max-width: 1100px;
+
+}
+
+.home h1, .home h2 {
+    text-align: center;
+}
+
+.home ul {
+    list-style-type: disc !important;
+    padding-left: 2em !important;
+    margin: 1em 0 !important;
+    display: block;
+}
+
+.home ol {
+    list-style-type: decimal !important;
+    padding-left: 2em !important;
+    margin: 1em 0 !important;
+}
+
+.home li {
+    display: list-item !important;
+    margin: 0.5em 0;
+    text-align: left;
+}
+
+.no-bullets-list ul {
+    list-style-type: none !important;
+}
+
+.layoutConteudo{
+    font-family: "Readex Pro", Lato, sans-serif;
+    margin: 0px;
+    padding: 0;
+    background-color: #1B1F23;
+    color: #FEFCFD;
+    text-align: center;
+}
+
+.conteudo-justificado {
+    text-align: justify;
+    text-justify: inter-word;
+    max-width: 1000px; /* ou a largura que preferir */
+    margin: 0 auto; /* centraliza o bloco */
+    padding: 20px;
+    list-style-type: disc;
+}
+
+.conteudo-justificado ul {
+    list-style-type: disc !important;
+    padding-left: 2em !important;
+    margin: 1em 0 !important;
+    display: block;
+}
+
+.conteudo-justificado ol {
+    list-style-type: decimal !important;
+    padding-left: 2em !important;
+    margin: 1em 0 !important;
+}
+
+.conteudo-justificado li {
+    display: list-item !important;
+    margin: 0.5em 0;
+    text-align: left;
+}
+
+.layoutConteudo h1{
+    font-size: 2.5em;
+    text-align: center;
+}
+
+.layoutConteudo h2{
+    font-size: 2em;
+}
+
+.layoutConteudo h3{
+    font-size: 1.5em;
+}
+
+.layoutConteudo h4{
+    font-size: 1em;
+}
+
+
+ul{
+  list-style-type: none;
+  padding:0;
+  margin:0;
+}
+
+.menuPrincipal{
+    font-family: 'Source Code Pro', sans-serif, monospace;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #6DB33F;
+    height: 4vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.listaNavegacao{
+    display: flex;
+    list-style: none;
+}
+.listaNavegacao li{
+    margin-left: 32px;
+}
+
+.menuPrincipal ul a{
+    color: #FEFCFD;
+    text-decoration: none;
+    padding: 5px;
+    font-weight: bolder;
+}
+.menuPrincipal .listaNavegacao li a {
+    color: #FEFCFD;
+}
+
+.menuPrincipal ul a:hover{
+    color: #1B1F23;
+}
+
+.dias_e_temas ul {
+  display: grid;
+  text-align: left;
+  align-items: center;
+  margin: auto;
+  justify-content: center;
+}
+
+.dias_e_temas a {
+  color: #6DB33F; 
+}
+
+.dias_e_temas a:hover {
+  color: #FEFCFD;
+}
+
+#sumario {
+    position: fixed;
+    text-align: left;
+    top: 0;
+    left: 0;
+    width: 300px; /* Ajuste conforme necessário */
+    padding: 10px; /* Espaçamento interno opcional */
+    height: 100%; /* Para ocupar toda a altura da página */
+    overflow-y: auto; /* Para adicionar rolagem, se necessário */
+    transition: left 0.3s ease; /* Transição suave para a animação */
+}
+
+#sumario ul{
+    list-style-type: square; 
+}
+
+.sumario-oldschool{
+    color: #00e300;
+    border-right: 1px solid #00e300;
+    background: black;
+}
+
+#sumario.hidden {
+    left: -321px; /* Ajuste conforme a largura do sumário */
+}
+
+/* Estilizando a barra de rolagem no Chrome, Safari e Opera */
+#sumario::-webkit-scrollbar {
+    width: 3px; /* Largura da barra de rolagem */
+    
+}
+
+#sumario::-webkit-scrollbar-track {
+    background: #000; /* Cor do trilho da barra de rolagem */
+    
+}
+
+.sumario-oldschool::-webkit-scrollbar-thumb {
+    background: #00e300; /* Cor do polegar da barra de rolagem */
+    border-radius: 10px; /* Borda arredondada para o polegar */
+}
+
+.sumario-oldschool::-webkit-scrollbar-thumb:hover {
+    background: #00e300; /* Cor do polegar da barra de rolagem quando está sendo rolado */
+}
+
+.sumario-git{
+    /*background: #020728;*/
+    /*background: #5D5D81;*/
+    /*background: rgba(93, 93, 129, 0.5);*/
+    background: rgba(109, 179, 63, 0.5);
+
+    
+    color: #f0f4ff;
+    /*border-right: 1px solid #893172;*/
+}
+
+
+.toggle-button{
+    font-family: "Source Code Pro", "Menlo", "DejaVu Sans Mono", "Lucida Console", monospace;
+    background-color: transparent;
+    border: none;
+    color: #ECDFD2;
+    position: fixed;
+    left: 0px;
+    top: 95%;
+}
+
+.toggle-button:hover{
+    color:#fff;
+}
+
+#home_content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: justify;
+}

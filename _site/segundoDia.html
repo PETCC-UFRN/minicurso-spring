@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Minicurso de Spring</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="./assets/css/styles.css">
+        <link rel="stylesheet" href="/minicurso-linux-git/assets/css/syntax.css">
+        <link rel="icon" href="https://i.ibb.co/RD7XwYH/pet-logo.png" type="image/png">
+    </head>
+    <body class="layoutConteudo">
+        <header>
+    <nav class="menuPrincipal">
+        <ul class="listaNavegacao">
+            <li>
+                <a href="index">/home</a>
+            </li>
+            <li>
+                <a href="aulas">/aulas</a>
+            </li> 
+            <li>
+                <a href="sobre">/sobre</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+
+        <div>
+            <main>
+                <div class="conteudo-justificado">
+                    <div id="sumario" class="sumario-git">
+
+<h1>Dia 2</h1>
+
+  <summary><a href="#revisão-do-primeiro-dia">Revisão do primeiro dia</a></summary>
+
+  <details>
+        <summary><a href="#o-que-são-apis">O que são APIs</a></summary>
+        <ul>
+            <li><a href="#comunicação-entre-sistemas-e-computadores">Comunicação entre sistemas e computadores</a></li>
+            <li><a href="#protocolo-http">Protocolo HTTP</a></li>
+        </ul>
+  </details>
+
+  <details>
+         <summary><a href="#apis-restful">APIs RESTful</a></summary>
+        <ul>
+            <li><a href="#arquitetura-de-sistemas">Arquitetura de Sistemas</a></li>
+            <li><a href="#arquitetura-em-camadas">Arquitetura em Camadas</a></li>
+        </ul>
+  </details>
+
+  <details>
+        <summary><a href="#camadas-do-sistema">Camadas do Sistema</a></summary>
+        <ul>
+            <li><a href="#camada-model">Camada Model</a></li>
+            <li><a href="#camada-controller">Camada Controller</a></li>
+            <li><a href="#camada-repository">Camada Repository</a></li>
+            <li><a href="#camada-service">Camada Service</a></li>
+        </ul>
+  </details>
+
+  <details>
+        <summary><a href="#organização-e-prática">Organização e Prática</a></summary>
+        <ul>
+            <li><a href="#fluxo-entre-as-camadas">Fluxo entre as Camadas</a></li>
+            <li><a href="#mantendo-o-sistema-organizado">Mantendo o Sistema Organizado</a></li>
+            <li><a href="#a-importância-do-design-da-api">A Importância do Design da API</a></li>
+            <li><a href="#exercício-prático-live-coding">Exercício Prático (Live Coding)</a></li>
+        </ul>
+  </details>
+    <button class="toggle-button" id="toggle-button">
+  
+      Esconder Sumário
+  
+  </button>
+  </div>
+<p><br /></p>
+
+<h2 id="revisão-do-primeiro-dia">Revisão do primeiro dia</h2>
+
+<p>No dia anterior, fortificamos a base necessária de Java para este minicurso e exploramos alguns tópicos novos referentes ao Spring. A aula iniciou com uma revisão simples de Java e Programação Orientada a Objetos, e depois partiu para a introdução de maioria das ferramentas do ecossistema Spring, além de se aprofundar em especial no funcionamento do Spring Framework. Ao final da aula tivemos uma prática para ilustrar o funcionamento de um sistema com Spring e para exemplificar a camada <code class="language-plaintext highlighter-rouge">model</code>.</p>
+
+<h2 id="resumo-do-segundo-dia">Resumo do segundo dia</h2>
+
+<p>Nesta aula, veremos um pouco mais sobre conceitos base do desenvolvimento Back End, além de iniciar nossas primeiras implementações. Começaremos a aula explicando o que são APIs e, logo após, falaremos um pouco sobre protocolo HTTP e APIs RESTful, que são o foco do nosso minicurso. Após isto, falaremos sobre duas camadas muito importantes de um sistema back-end, a camada <em>model</em> e a camada <em>controller</em>, e discorreremos sobre como o Spring lida com essas camadas.</p>
+
+<h2 id="o-que-são-apis">O que são APIs</h2>
+
+<div style="text-align: center;"> <img alt="Analogia para explicar o funcionamento de uma API utilizando o exemplo de um restaurante" src="assets/images/analogia_api.png" width="60%" />
+</div>
+
+<p>API é uma sigla para <em>Application Programming Interface</em>, e é basicamente uma série de “regras”, implementadas em uma linguagem de programação específica, que permite que diferentes sistemas se comuniquem.</p>
+
+<p>Mas por que precisamos dessas regras?</p>
+
+<h2 id="comunicação-entre-sistemas-e-computadores">Comunicação entre sistemas e computadores</h2>
+
+<p>Sabemos que computadores interpretam dados de forma 100% lógica e literal, portanto, precisam de regras bem definidas para conversar entre si numa mesma <strong>rede</strong>. Um dos exemplos mais famosos desse tipo de “regra” (que chamamos de protocolo) é o <strong>protocolo HTTP</strong></p>
+
+<h3 id="protocolo-http">Protocolo HTTP</h3>
+
+<p>O protocolo HTTP é baseado em um modelo chamado <strong>modelo cliente-servidor</strong>, onde um computador (cliente) faz <em>requisições</em> a outro computador (servidor). Estas requisições são as tais mensagens que estávamos falando na seção anterior, e elas possuem um formato bem específico:</p>
+
+<ol>
+  <li>O método (<em>method</em>)</li>
+</ol>
+
+<ul>
+  <li>O que queremos fazer</li>
+</ul>
+
+<ol>
+  <li>O caminho (<em>path</em>)</li>
+</ol>
+
+<ul>
+  <li>Onde, na aplicação, queremos fazer</li>
+</ul>
+
+<ol>
+  <li>O cabeçalho (<em>header</em>)</li>
+</ol>
+
+<ul>
+  <li>Onde, na internet, queremos fazer</li>
+  <li>Informações adicionais</li>
+</ul>
+
+<p>Entender como funciona o protocolo HTTP é muito importante para aspirantes do desenvolvimento Web, pois muitos assuntos giram em torno dele nessa área, um deles sendo o tipo específico de API que iremos estudar nesse curso: a <strong>API RESTful</strong>.</p>
+
+<h2 id="apis-restful">APIs RESTful</h2>
+
+<p>APIs RESTful são APIs que seguem o estilo de arquitetura REST, que é definido no livro <em>Microservice APIs</em> como <em>“um estilo arquitetural para a construção de APIs fracamente acopladas e altamente escaláveis. As APIs REST são estruturadas em torno de recursos, entidades que podem ser manipuladas por meio da API.”</em>.</p>
+
+<p>Sendo assim, as APIs RESTful baseiam se em definir regras para a manipulação de recursos dentro de um sistema, e esses recursos estão diretamente localizados em um lugar chamado <em>endpoint</em>, dentro do servidor.</p>
+
+<p>Vamos ver um exemplo para facilitar as coisas:</p>
+
+<p>Digamos que você (cliente) esteja acessando um site de compras, e adicionando várias coisas no seu carrinho. Depois de escolher mil e uma coisas desnecessárias que você nunca vai comprar, você decide visualizar a sua grande lista de futilidades clicando em “Meu Carrinho”, e assim aparece uma lista de vários produtos. Esses produtos muito provavelmente estão guardados em um <em>endpoint</em> com o seguinte formato: <code class="language-plaintext highlighter-rouge">/api/clientes/seu_id/carrinho/</code></p>
+
+<p>Portanto, temos um <strong>lugar na aplicação</strong> (<em>endpoint</em>), um <strong>lugar na internet</strong> (site de compras) e uma <strong>ação específica que queremos fazer</strong> (visualizar).</p>
+
+<p>Veja que isso é muito parecido com o protocolo HTTP! Entende porque falamos dele no início da aula?</p>
+
+<div style="text-align: center;"> <img alt="Funcionamento de uma API RESTful" src="assets/images/restful_apis_diagrama.png" width="60%" />
+</div>
+
+<p>OBS.: É importante lembrar que APIs RESTful são <em>baseadas</em> no protocolo HTTP (utilizam muitos métodos do protocolo), mas que não <em>seguem-o</em> à risca.</p>
+
+<h2 id="arquitetura-de-sistemas">Arquitetura de Sistemas</h2>
+
+<div style="text-align: center;">
+<img src="assets/images/clean_arch.png" alt="Diagrama ilustrando a arquitetura de um sistema em camadas" width="40%" />
+</div>
+
+<ul>
+  <li>Forma como um sistema é organizado internamente.</li>
+  <li>Define responsabilidades, comunicação e separação de partes.</li>
+  <li>Importante para manutenção, escalabilidade e trabalho em equipe.</li>
+</ul>
+
+<hr />
+
+<h2 id="arquitetura-em-camadas">Arquitetura em Camadas</h2>
+
+<div style="text-align: center;">
+<img src="assets/images/arquitetura.png" alt="Diagrama ilustrando a arquitetura de um sistema em camadas" width="50%" />
+</div>
+
+<ul>
+  <li>Separação de responsabilidades.</li>
+  <li>Cada camada tem um papel bem definido.</li>
+  <li>Camadas comuns em aplicações Spring:
+    <ul>
+      <li>Model</li>
+      <li>Controller</li>
+      <li>Service</li>
+      <li>Repository</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="camada-model">Camada Model</h2>
+
+<p>A camada Model representa o domínio da aplicação, ou seja, os objetos que descrevem os dados e conceitos centrais do sistema, como Livro, Usuário, Pedido ou Produto. Ela define os atributos que cada entidade possui e, em muitos casos, é mapeada diretamente para tabelas do banco de dados por meio de anotações como @Entity, @Id e @GeneratedValue. O Model é utilizado por todas as outras camadas, pois ele é a estrutura base que trafega entre Controller, Service e Repository. Além de armazenar dados, pode conter comportamentos simples relacionados à própria entidade, mas não deve concentrar regras complexas de negócio.</p>
+
+<p>Exemplo de uma tabela criada no mysql:</p>
+<div style="text-align: center;">
+<img src="assets/images/database_terminal.png" alt="Diagrama ilustrando a arquitetura de um sistema em camadas" width="50%" />
+</div>
+
+<p>Exemplo de uma
+classe Entity Pessoas:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">jakarta.persistence.Entity</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">jakarta.persistence.Table</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">jakarta.persistence.GenerationType</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">jakarta.persistence.Id</span><span class="o">;</span>
+
+<span class="nd">@Entity</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">"pessoas"</span><span class="o">)</span>
+<span class="nd">@Table</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">"pessoas"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Pessoas</span> <span class="o">{</span>
+  <span class="nd">@Id</span>
+  <span class="nd">@GeneratedValue</span><span class="o">(</span><span class="n">strategy</span> <span class="o">=</span> <span class="nc">Generation</span><span class="o">.</span><span class="na">Type</span><span class="o">.</span><span class="na">IDENTITY</span><span class="o">)</span>
+  <span class="kd">private</span> <span class="nc">Long</span> <span class="n">id</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="nc">String</span> <span class="n">nome</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="nc">Integer</span> <span class="n">idade</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="nc">String</span> <span class="n">cpf</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="nc">String</span> <span class="n">email</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="nc">String</span> <span class="n">senha</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="camada-controller">Camada Controller</h2>
+
+<p>A classe Controller no Spring é o componente responsável por receber requisições HTTP, interpretar os dados enviados pelo cliente e retornar uma resposta adequada. Quando utilizamos a anotação @RestController, estamos dizendo ao Spring que aquela classe é um controlador web e que seus métodos irão retornar dados diretamente no corpo da resposta HTTP (geralmente em JSON), e não uma página HTML. Internamente, @RestController é a combinação de @Controller + @ResponseBody, o que significa que todo método já retorna o objeto serializado automaticamente.</p>
+
+<p>Agora, para entender stateless e stateful, precisamos falar sobre estado (state). Estado é qualquer informação que precisa ser mantida entre uma requisição e outra. Em aplicações web tradicionais, especialmente as baseadas em renderização de páginas no servidor (como JSP ou Thymeleaf), o servidor frequentemente mantém informações da sessão do usuário em memória. Isso caracteriza uma aplicação stateful.</p>
+
+<p>Uma aplicação stateful mantém estado no servidor entre requisições. Isso normalmente acontece através de sessões HTTP.  Exemplo:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="nd">@SessionAttributes</span><span class="o">(</span><span class="s">"usuarioLogado"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">LoginController</span> <span class="o">{</span>
+
+    <span class="nd">@PostMapping</span><span class="o">(</span><span class="s">"/login"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">login</span><span class="o">(</span><span class="nd">@RequestParam</span> <span class="nc">String</span> <span class="n">email</span><span class="o">,</span> <span class="nc">Model</span> <span class="n">model</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">model</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">"usuarioLogado"</span><span class="o">,</span> <span class="n">email</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">"home"</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Aqui:</p>
+
+<ul>
+  <li>O servidor guarda informações da sessão.</li>
+  <li>Cada usuário possui um estado armazenado.</li>
+  <li>O servidor precisa lembrar quem está logado.</li>
+</ul>
+
+<p>Características de aplicações stateful:</p>
+
+<ul>
+  <li>Usa sessão (HttpSession)</li>
+  <li>Armazena dados do usuário em memória no servidor</li>
+  <li>Muito comum em aplicações web antigas baseadas em páginas</li>
+</ul>
+
+<p>Agora, uma aplicação stateless não mantém estado no servidor entre requisições. Cada requisição precisa conter todas as informações necessárias para ser processada.</p>
+
+<p>Exemplo com REST:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RestController</span>
+<span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/livros"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">LivroController</span> <span class="o">{</span>
+
+    <span class="nd">@GetMapping</span>
+    <span class="kd">public</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Livro</span><span class="o">&gt;</span> <span class="nf">listar</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">service</span><span class="o">.</span><span class="na">listar</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Vemos aqui:</p>
+
+<ul>
+  <li>O servidor não guarda informação da requisição anterior.</li>
+  <li>Cada chamada é independente.</li>
+  <li>Se houver autenticação, o token (ex: JWT) vai em cada requisição no header.</li>
+</ul>
+
+<p>Características de aplicações stateless:</p>
+
+<ul>
+  <li>Não usa sessão do servidor</li>
+  <li>Cada requisição é independente</li>
+  <li>Mais fácil de escalar (microservices)</li>
+  <li>Ideal para APIs REST</li>
+</ul>
+
+<h3 id="exemplos-de-métodos">Exemplos de métodos</h3>
+
+<ul>
+  <li>getUsuario</li>
+  <li>createProduto</li>
+  <li>removeProduto</li>
+</ul>
+
+<h3 id="anotações-comuns">Anotações comuns</h3>
+
+<ul>
+  <li>@RestController</li>
+  <li>@GetMapping</li>
+  <li>@PostMapping</li>
+</ul>
+
+<hr />
+
+<h2 id="camada-repository">Camada Repository</h2>
+
+<p>A camada Repository é responsável pela persistência dos dados, ou seja, pela comunicação direta com o banco de dados. Ela executa operações como salvar, atualizar, buscar e remover registros. No Spring, geralmente é implementada como uma interface que estende JpaRepository, permitindo o uso de métodos prontos para CRUD sem necessidade de implementação manual. O Repository deve focar exclusivamente no acesso a dados, sem conter regras de negócio, mantendo assim a responsabilidade bem definida dentro da arquitetura em camadas.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">org.springframework.data.jpa.repository.JpaRepository</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Optional</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">UserRepository</span> <span class="kd">extends</span> <span class="nc">JpaRepository</span><span class="o">&lt;</span><span class="nc">User</span><span class="o">,</span> <span class="nc">Long</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="nc">Optional</span><span class="o">&lt;</span><span class="nc">User</span><span class="o">&gt;</span> <span class="nf">findUserById</span><span class="o">(</span><span class="nc">Long</span> <span class="n">id</span><span class="o">);</span>
+    <span class="nc">Optional</span><span class="o">&lt;</span><span class="nc">User</span><span class="o">&gt;</span> <span class="nf">findUserByDocument</span><span class="o">(</span><span class="nc">String</span> <span class="n">document</span><span class="o">);</span>
+    <span class="nc">Optional</span><span class="o">&lt;</span><span class="nc">User</span><span class="o">&gt;</span> <span class="nf">findUserByEmail</span><span class="o">(</span><span class="nc">String</span> <span class="n">email</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="exemplos">Exemplos</h3>
+
+<ul>
+  <li>findById</li>
+  <li>findByNome</li>
+  <li>save</li>
+  <li>delete</li>
+</ul>
+
+<h3 id="no-spring">No Spring</h3>
+
+<ul>
+  <li>Extende JpaRepository</li>
+  <li>Anotação: @Repository</li>
+</ul>
+
+<hr />
+
+<h2 id="camada-service">Camada Service</h2>
+
+<p>A camada Service concentra a lógica de negócio do sistema. É nela que ficam as regras que definem como o sistema deve se comportar, como validações, cálculos, verificações de permissões, regras de consistência e orquestração de múltiplas operações. A Service atua como intermediária entre o Controller e o Repository, garantindo que os dados sejam processados corretamente antes de serem persistidos ou retornados. Essa separação facilita a manutenção, os testes automatizados e a evolução do sistema, pois a lógica fica centralizada em um único ponto, evitando duplicação e acoplamento excessivo.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Service</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserService</span> <span class="o">{</span>
+
+    <span class="nd">@Autowired</span>
+    <span class="kd">private</span> <span class="nc">UserRepository</span> <span class="n">repository</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">validationUserTransaction</span><span class="o">(</span><span class="nc">User</span> <span class="n">sender</span><span class="o">,</span> <span class="nc">BigDecimal</span> <span class="n">amount</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">sender</span><span class="o">.</span><span class="na">getType</span><span class="o">()</span> <span class="o">!=</span> <span class="nc">UserType</span><span class="o">.</span><span class="na">COMMON</span><span class="o">){</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">Exception</span><span class="o">(</span><span class="s">"User type not allowed to do a transfer"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">sender</span><span class="o">.</span><span class="na">getBalance</span><span class="o">().</span><span class="na">compareTo</span><span class="o">(</span><span class="n">amount</span><span class="o">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">){</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">Exception</span><span class="o">(</span><span class="s">"User has not enough money to complete the transaction"</span><span class="o">);</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">User</span> <span class="nf">findUserById</span><span class="o">(</span><span class="nc">Long</span> <span class="n">id</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">repository</span><span class="o">.</span><span class="na">findUserById</span><span class="o">(</span><span class="n">id</span><span class="o">).</span><span class="na">orElseThrow</span><span class="o">(</span>
+                <span class="o">()</span> <span class="o">-&gt;</span> <span class="k">new</span> <span class="nc">Exception</span><span class="o">(</span><span class="s">"User not found"</span><span class="o">)</span>
+                <span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">saveUser</span><span class="o">(</span><span class="nc">User</span> <span class="n">user</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">repository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="exemplo">Exemplo</h3>
+
+<ul>
+  <li>realizarCompra:
+    <ul>
+      <li>valida usuário</li>
+      <li>verifica estoque</li>
+      <li>calcula valor</li>
+      <li>processa pagamento</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="no-spring-1">No Spring</h3>
+
+<ul>
+  <li>Anotação: @Service</li>
+</ul>
+
+<hr />
+
+<h2 id="fluxo-entre-as-camadas">Fluxo entre as Camadas</h2>
+
+<p>Controller -&gt; Service -&gt; Repository -&gt; Banco<br />
+Model é utilizado por todas as camadas.</p>
+
+<hr />
+
+<h2 id="mantendo-o-sistema-organizado">Mantendo o Sistema Organizado</h2>
+
+<ul>
+  <li>Organização facilita manutenção.</li>
+  <li>Reduz bugs.</li>
+  <li>Facilita testes e evolução do sistema.</li>
+</ul>
+
+<hr />
+
+<h2 id="a-importância-do-design-da-api">A Importância do Design da API</h2>
+
+<ul>
+  <li>Define como o cliente interage com o sistema.</li>
+  <li>Boas APIs são:
+    <ul>
+      <li>previsíveis</li>
+      <li>semânticas</li>
+      <li>consistentes</li>
+      <li>RESTful</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="exercício-prático-live-coding">Exercício Prático (Live Coding)</h2>
+
+<ul>
+  <li>Implementação de um sistema de biblioteca.</li>
+  <li>Foco nas camadas:
+    <ul>
+      <li>Model</li>
+      <li>Controller</li>
+      <li>Repository</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="funcionalidades">Funcionalidades</h3>
+
+<ul>
+  <li>Cadastro de livros</li>
+  <li>Listagem de livros</li>
+  <li>Integração com banco de dados</li>
+</ul>
+
+<h2 id="como-compilar-o-projeto">Como Compilar o Projeto?</h2>
+
+<ul>
+  <li>mvn clean            –&gt; limpa</li>
+  <li>mvn compile          –&gt; compila</li>
+  <li>mvn test             –&gt; testa</li>
+  <li>mvn package          –&gt; gera JAR</li>
+  <li>mvn install          –&gt; instala no .m2</li>
+  <li>mvn clean install    –&gt; padrão</li>
+  <li>mvn clean install -X –&gt; debug</li>
+  <li>mvn spring-boot:run  –&gt; roda a app</li>
+</ul>
+
+<p>Neste curso, iremos usar, principalmente:</p>
+
+<ul>
+  <li>mvn clean install</li>
+  <li>mvn spring-boot:run</li>
+</ul>
+
+                </div>
+            </main>
+            <script src="./assets/js/sumario_script.js"></script>
+        </div>
+    </body>
+</html>
+
+<script type="text/javascript">
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  },
+  options: {
+    ignoreHtmlClass: 'highlight|code'
+  }
+};
+</script>
+<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

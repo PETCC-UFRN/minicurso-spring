@@ -342,9 +342,11 @@ spring:
 - Service - Lógica de Negócio ;
 - Repository - Comunicação direta com o Banco de Dados;
 
+<div style="text-align: center;"> <img alt="Meme muito engraçado sobre arquivos do sistema" src="assets/images/springlayers.png" width="60%"> </div>
+
 ***OBS.: Como o foco desse curso é apenas desenvolvimento Web, as soluções relacionadas à camada Repository serão sempre disponibilizadas previamente***
 
-  Sendo cada uma dessas camadas responsável por uma parte do sistema. Ao longo desse curso vamos focar no desenvolvimento das camadas Model, Controller e Service e, na aula de hoje, vamos nos aprofundar na camada Model.
+  Ao longo desse curso vamos focar no desenvolvimento das camadas Model, Controller e Service e, na aula de hoje, vamos nos aprofundar na camada Model.
 
   Aqui está a estrutura resumida de um projeto Spring:
 
@@ -481,7 +483,7 @@ Obs.: Para compilar, basta usarmos o comando `./mvnw spring-boot:run`
 
 Agora que fizemos uma classe da camada model, seria muito anticlimático que o método de visualizar tudo funcionando fosse apenas conseguir compilar o programa. Para dar um gostinho dos próximos dias, disponibilizaremos a camada controller e a repository desse mini projetinho, junto com um pequeno script sql que servirá para popular a tabela gerada pela classe petiano.
 
-[Clicando aqui]() vocês baixarão a camada controller, a camada repository, o script sql e o application.properties.
+[Clicando aqui](https://drive.google.com/drive/folders/1jYb6jZxgWt59IMtkBH2j6aorvbVd5qbA?usp=sharing) vocês baixarão a camada controller, a camada repository, o script sql e o application.properties.
 
 A organização da pasta principal do projeto (a que possui o arquivo {nomeDoProjeto}Application.java) deve ficar assim:
 

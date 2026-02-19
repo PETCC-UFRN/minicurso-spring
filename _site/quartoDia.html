@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Minicurso de Spring</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="./assets/css/styles.css">
+        <link rel="stylesheet" href="/minicurso-linux-git/assets/css/syntax.css">
+        <link rel="icon" href="https://i.ibb.co/RD7XwYH/pet-logo.png" type="image/png">
+    </head>
+    <body class="layoutConteudo">
+        <header>
+    <nav class="menuPrincipal">
+        <ul class="listaNavegacao">
+            <li>
+                <a href="index">/home</a>
+            </li>
+            <li>
+                <a href="aulas">/aulas</a>
+            </li> 
+            <li>
+                <a href="sobre">/sobre</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+
+        <div>
+            <main>
+                <div class="conteudo-justificado">
+                    <h1 id="segurança-e-banco-de-dados-no-spring">Segurança e Banco de Dados no Spring</h1>
+
+<h2 id="resumo-do-quarto-dia">Resumo do quarto dia</h2>
+
+<p>Neste dia, aprofundaremos o desenvolvimento em Spring abordando um tópico essencial para qualquer sistema Back-End: Segurança e Banco de Dados. Utilizando a dependência Spring Security e o banco de dados H2, implementaremos um sistmea básico de autenticação e autorização, compreendendo os princípios de segurança em aplicações web. Ao final do dia, os alunos serão capazes de criar mecanismos de controle de acesso baseados em perfis de usuário e estarão aptos a realizar o projeto final do minicurso.</p>
+
+<h2 id="revisão-do-terceiro-dia">Revisão do terceiro dia</h2>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Controller</code> e <code class="language-plaintext highlighter-rouge">Service</code>:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">Controller</code> deve atuar apenas como um “porteiro” (recebendo e devolvendo requisições).</li>
+      <li>A lógica pesada e as regras de negócio devem ficar na camada <code class="language-plaintext highlighter-rouge">Service</code> para respeitar o Princípio da Responsabilidade Única (SRP) e facilitar testes.</li>
+    </ul>
+  </li>
+  <li>Regras de Negócio
+    <ul>
+      <li>Validações e procedimentos que traduzem o “mundo real” para o código</li>
+      <li>Ex: Verificar se há estoque suficiente ou se um aluno pode se matricular.</li>
+    </ul>
+  </li>
+  <li>Fluxo de Dados no Spring:
+    <ul>
+      <li>Controller $\leftrightarrow$ Service (processamento) $\leftrightarrow$ Repository (banco de dados).</li>
+    </ul>
+  </li>
+  <li>DTOs (Data Transfer Objects)
+    <ul>
+      <li>Aprendemos a usar DTOs para transportar dados de forma segura e desacoplada, evitando expor nossas Entidades diretamente na API e escondendo dados sensíveis como senhas</li>
+    </ul>
+  </li>
+  <li>Documentação de Código e API
+    <ul>
+      <li>Aprendemos a utilizar Swagger para documentação de API e JavaDoc para documentação de código.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="segurança-com-spring-security">Segurança com Spring Security</h2>
+
+<h3 id="por-que-é-importante-ter-um-sistema-sólido">Por que é importante ter um sistema sólido</h3>
+
+<p>Uma boa segurança é uma necessidade para qualquer aplicação web que vá lidar com dados pessoais de usuários. Devido a LGPD (Lei Geral de Proteção de Dados) é legalmente necessário que as organizações (ou seja, as empresas) protejam os dados pessoais de usuários no Brasil. Muitas empresas tem times específicos para lidar com a segurança, mas em muitas outras essa responsabilidade cai diretamente nos desenvolvedores, então é importante ter conhecimentos nisso. Porém, é nosso dever informar que uma solução completa para segurança das informações de uma aplicação web real está muito além do que podemos fazer neste curso.</p>
+
+<p>A <strong>Autenticação</strong> garante que o usuário é realmente quem diz ser (através de diversas formas diferentes, sendo email e senha os mais comuns métodos de autenticação), enquanto a <strong>Autorização</strong> garante que os usuários tenham acesso apenas aquilo que podem fazer, impedindo que um usuário comum tenha privilégios de admnistrador, por exemplo. Seguir padrões rigorosos de <strong>autenticação</strong> e <strong>autorização</strong> é uma forma simples e direta de fazer um sistema sólido e relativamente seguro, e o Spring Security serve justamente para isso.</p>
+
+<h3 id="como-utilizar-o-spring-security">Como utilizar o Spring Security</h3>
+
+<p>Spring Security é um framework extensível que fornece autenticação e autorização para aplicações Java. Seu funcionamento baseia-se em:</p>
+
+<ol>
+  <li>
+    <p>Cadeia de Filtros (Filter Chain): Cada requisição HTTP passa por uma cadeia de filtros de segurança</p>
+  </li>
+  <li>
+    <p>AuthenticationManager: Gerencia o processo de autenticação usando provedores configurados</p>
+  </li>
+  <li>
+    <p>UserDetailsService: Interface para carregar dados do usuário a partir de uma fonte (banco de dados, LDAP, etc.)</p>
+  </li>
+  <li>
+    <p>PasswordEncoder: Responsável por criptografar e verificar senhas (BCrypt é o mais recomendado)</p>
+  </li>
+  <li>
+    <p>Configuração via SecurityFilterChain: Define regras de autorização, formulários de login, tratamento de logout e CSRF</p>
+  </li>
+</ol>
+
+<p>A implementação típica envolve: configurar um <code class="language-plaintext highlighter-rouge">SecurityFilterChain</code>, criar um serviço que implementa <code class="language-plaintext highlighter-rouge">UserDetailsService</code>, definir entidades de usuário com permissões e proteger <em>endpoints</em> baseado em <em>roles</em> utilizando anotações como <code class="language-plaintext highlighter-rouge">@PreAuthorize</code> ou configurações no filtro de segurança.</p>
+
+<ol>
+  <li>Adicionar a dependência <code class="language-plaintext highlighter-rouge">spring-security</code> no <code class="language-plaintext highlighter-rouge">pom.xml</code></li>
+</ol>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependencies&gt;</span>
+    ...
+    <span class="nt">&lt;dependency&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-security<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    ...
+<span class="nt">&lt;/dependencies&gt;</span>
+</code></pre></div></div>
+
+<ol>
+  <li>Criar um arquivo <code class="language-plaintext highlighter-rouge">SecurityConfig.java</code> com as configurações de segurança</li>
+</ol>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Bean</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Configuration</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.http.HttpMethod</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.security.config.Customizer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.security.config.annotation.web.builders.HttpSecurity</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.security.config.annotation.web.configuration.EnableWebSecurity</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.security.core.userdetails.User</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.security.core.userdetails.UserDetails</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.security.core.userdetails.UserDetailsService</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.security.crypto.factory.PasswordEncoderFactories</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.security.crypto.password.PasswordEncoder</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.security.provisioning.InMemoryUserDetailsManager</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.security.web.SecurityFilterChain</span><span class="o">;</span>
+
+<span class="nd">@Configuration</span>
+<span class="nd">@EnableWebSecurity</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SecurityConfig</span> <span class="o">{</span>
+
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="nc">SecurityFilterChain</span> <span class="nf">securityFilterChain</span><span class="o">(</span><span class="nc">HttpSecurity</span> <span class="n">http</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="n">http</span>
+            <span class="o">.</span><span class="na">csrf</span><span class="o">(</span><span class="nl">AbstractHttpConfigurer:</span><span class="o">:</span><span class="n">disable</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">authorizeHttpRequests</span><span class="o">(</span><span class="n">auth</span> <span class="o">-&gt;</span> <span class="n">auth</span>
+                <span class="c1">// Regra de Negócio: Qualquer um pode ver a documentação da API</span>
+                <span class="o">.</span><span class="na">requestMatchers</span><span class="o">(</span>
+                    <span class="s">"/v3/api-docs/**"</span><span class="o">,</span>
+                    <span class="s">"/swagger-ui/**"</span><span class="o">,</span>
+                    <span class="s">"/swagger-ui.html"</span><span class="o">).</span><span class="na">permitAll</span><span class="o">()</span>
+                
+                <span class="c1">// Regra de Negócio: Qualquer um pode ver os livros</span>
+                <span class="o">.</span><span class="na">requestMatchers</span><span class="o">(</span><span class="nc">HttpMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">,</span> <span class="s">"/livros/**"</span><span class="o">).</span><span class="na">permitAll</span><span class="o">()</span>
+                
+                <span class="c1">// Regra de Negócio: Só ADMIN pode alterar o banco</span>
+                <span class="o">.</span><span class="na">requestMatchers</span><span class="o">(</span><span class="nc">HttpMethod</span><span class="o">.</span><span class="na">POST</span><span class="o">,</span> <span class="s">"/livros/**"</span><span class="o">).</span><span class="na">hasRole</span><span class="o">(</span><span class="s">"ADMIN"</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">requestMatchers</span><span class="o">(</span><span class="nc">HttpMethod</span><span class="o">.</span><span class="na">DELETE</span><span class="o">,</span> <span class="s">"/livros/**"</span><span class="o">).</span><span class="na">hasRole</span><span class="o">(</span><span class="s">"ADMIN"</span><span class="o">)</span>
+                
+                <span class="c1">// O resto exige login</span>
+                <span class="o">.</span><span class="na">anyRequest</span><span class="o">().</span><span class="na">authenticated</span><span class="o">()</span>
+            <span class="o">)</span>
+            <span class="o">.</span><span class="na">httpBasic</span><span class="o">(</span><span class="nc">Customizer</span><span class="o">.</span><span class="na">withDefaults</span><span class="o">());</span>
+
+        <span class="k">return</span> <span class="n">http</span><span class="o">.</span><span class="na">build</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="nc">UserDetailsService</span> <span class="nf">userDetailsService</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">PasswordEncoder</span> <span class="n">enc</span> <span class="o">=</span> <span class="nc">PasswordEncoderFactories</span><span class="o">.</span><span class="na">createDelegatingPasswordEncoder</span><span class="o">();</span>
+
+        <span class="nc">UserDetails</span> <span class="n">user</span> <span class="o">=</span> <span class="nc">User</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">username</span><span class="o">(</span><span class="s">"usuario"</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">password</span><span class="o">(</span><span class="n">enc</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="s">"123456"</span><span class="o">))</span>
+            <span class="o">.</span><span class="na">roles</span><span class="o">(</span><span class="s">"USER"</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+
+        <span class="nc">UserDetails</span> <span class="n">admin</span> <span class="o">=</span> <span class="nc">User</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">username</span><span class="o">(</span><span class="s">"admin"</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">password</span><span class="o">(</span><span class="n">enc</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="s">"admin123"</span><span class="o">))</span>
+            <span class="o">.</span><span class="na">roles</span><span class="o">(</span><span class="s">"ADMIN"</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">InMemoryUserDetailsManager</span><span class="o">(</span><span class="n">user</span><span class="o">,</span> <span class="n">admin</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h4 id="entendendo-a-lógica-por-trás">Entendendo a Lógica por trás</h4>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()</code>
+    <ul>
+      <li>Permite que todos que acessarem os caminhos <code class="language-plaintext highlighter-rouge">/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html</code> serão liberados</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">.requestMatchers(HttpMethod.GET, "/livros/**").permitAll()</code>
+    <ul>
+      <li>Todos os <code class="language-plaintext highlighter-rouge">GETs</code> em <code class="language-plaintext highlighter-rouge">/livros/**</code> serão liberados</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">.requestMatchers(HttpMethod.POST, "/livros/**").hasRole("ADMIN")</code>
+    <ul>
+      <li>Os POSTs em <code class="language-plaintext highlighter-rouge">/livros/**</code> só podem ser feitos por <code class="language-plaintext highlighter-rouge">ADMINs</code></li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">userDetailsService()</code>
+    <ul>
+      <li>Esta implementação é apenas um recurso temporário para acelerar o processo. Quandoo formos para a parte de conexão com o BD, isso será explicado de uma forma mais apropriada</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="prática">Prática</h3>
+
+<p>Agora vamos ver como o Spring Security irá funcionar se aplicado nos códigos que vinham sendo desenvolvidos. Após isso, cada um irá adicionar esses mecanismos de segurança em seus projetos.</p>
+
+<h2 id="utilizando-bancos-de-dados-no-spring">Utilizando bancos de dados no Spring</h2>
+
+<p>Uma aplicação precisa de um Banco de Dados, afinal de contas não teria de onde a API puxar os dados caso contrário. Como o foco desse curso é especificamente o desenvolvimento Back-End, focaremos em ensinar somente como realizar a conexão com um banco de dados dentro do Spring, a partir do arquivo <code class="language-plaintext highlighter-rouge">application.properties</code>. Neste exemplo estaremos usando o banco de dados H2, que é o mesmo banco de dados que utilizaremos no <strong>Projeto Final</strong>.</p>
+
+<p>Para os próximos passos, vamos conectar o h2 ao projeto que vínhamos desenvolvendo.</p>
+
+<h3 id="1-verificando-se-o-h2-está-no-projeto">1. Verificando se o H2 está no projeto</h3>
+
+<ul>
+  <li>A primeira coisa que precisamos fazer é verificar se nosso arquivo <code class="language-plaintext highlighter-rouge">pom.xml</code> já possui a dependência do H2.</li>
+  <li>Caso não esteja, baixa adicionar o seguinte código no arquivo <code class="language-plaintext highlighter-rouge">pom.xml</code>:</li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependencies&gt;</span>
+    ...
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>com.h2database<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>h2<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;scope&gt;</span>runtime<span class="nt">&lt;/scope&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+    ...
+<span class="nt">&lt;/dependencies&gt;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Após isso, precisamos reiniciar o maven
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">mvn clean install -U</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="2-modificando-o-applicationproperties">2. Modificando o <code class="language-plaintext highlighter-rouge">application.properties</code></h3>
+
+<ul>
+  <li>O <code class="language-plaintext highlighter-rouge">application.properties</code> é um arquivo onde ficam várias configurações do projeto</li>
+  <li>Ele está localizado em <code class="language-plaintext highlighter-rouge">/src/main/resources/application.properties</code></li>
+  <li>
+    <p>O que estiver escrito lá <strong>precisa</strong> continuar. Vamos apenas adicionar novas linhas de código</p>
+
+    <div class="language-properties highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c"># --- 1. CONFIGURAÇÃO DA CONEXÃO ---
+</span>  <span class="py">spring.datasource.url</span><span class="p">=</span><span class="s">jdbc:h2:mem:testdb</span>
+  <span class="py">spring.datasource.driverClassName</span><span class="p">=</span><span class="s">org.h2.Driver</span>
+  <span class="py">spring.datasource.username</span><span class="p">=</span><span class="s">sa</span>
+  <span class="py">spring.datasource.password</span><span class="p">=</span>
+
+  <span class="c"># --- 2. CONFIGURAÇÃO DO CONSOLE (A Interface Visual) ---
+</span>  <span class="py">spring.h2.console.enabled</span><span class="p">=</span><span class="s">true</span>
+  <span class="py">spring.h2.console.path</span><span class="p">=</span><span class="s">/h2-console</span>
+
+  <span class="c"># --- 3. INTEGRAÇÃO JPA ---
+</span>  <span class="py">spring.jpa.hibernate.ddl-auto</span><span class="p">=</span><span class="s">update</span>
+  <span class="py">spring.jpa.show-sql</span><span class="p">=</span><span class="s">true</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h4 id="explicando-o-código">Explicando o código</h4>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">spring.datasource.url=jdbc:h2:mem:testdb</code>
+    <ul>
+      <li>Define a URL de conexão para o banco de dados H2 em memória.</li>
+      <li><code class="language-plaintext highlighter-rouge">jdbc</code> = protocolo Java</li>
+      <li><code class="language-plaintext highlighter-rouge">h2</code> = tipo do banco</li>
+      <li><code class="language-plaintext highlighter-rouge">mem</code> = em memória (se fechar o app, os dados somem)</li>
+      <li><code class="language-plaintext highlighter-rouge">testdb</code> = nome do banco de dados</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">spring.datasource.driverClassName=org.h2.Driver</code>
+    <ul>
+      <li>Driver que ‘ensina’ o Java a falar com o H2</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">spring.datasource.username=sa</code>
+    <ul>
+      <li>Usuário padrão do H2</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">spring.datasource.password=</code>
+    <ul>
+      <li>Senha padrão do H2. Fica em branco para facilitar os testes em aula</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">spring.h2.console.enabled=true</code>
+    <ul>
+      <li>Habilita a página web de gerenciamento do banco</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">spring.h2.console.path=/h2-console</code>
+    <ul>
+      <li>Define o link de acesso (<a href="http://localhost:8080/h2-console">http://localhost:8080/h2-console</a>)</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">spring.jpa.hibernate.ddl-auto=update</code>
+    <ul>
+      <li>Faz o Spring olhar suas classes @Entity e criar/atualizar as tabelas automaticamente</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">spring.jpa.show-sql=true</code>
+    <ul>
+      <li>Mostra no terminal os comandos (INSERT, SELECT) que o Spring está fazendo por trás dos panos</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="3-ajustando-securityconfigjava">3. Ajustando <code class="language-plaintext highlighter-rouge">SecurityConfig.java</code></h3>
+
+<ul>
+  <li>Agora que o terreno está preparado, podemos partir para ajustes mais específicos.</li>
+  <li>Precisamos ‘liberar’ o H2 dentro do <code class="language-plaintext highlighter-rouge">SecurityConfig.java</code>, para que ele saiba que o h2 existe e não peça a senha</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//Novo import que precisa ser feito</span>
+<span class="kn">import</span> <span class="nn">org.springframework.security.web.util.matcher.AntPathRequestMatcher</span><span class="o">;</span>
+
+<span class="nd">@Configuration</span>
+<span class="nd">@EnableWebSecurity</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SecurityConfig</span> <span class="o">{</span>
+
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="nc">SecurityFilterChain</span> <span class="nf">securityFilterChain</span><span class="o">(</span><span class="nc">HttpSecurity</span> <span class="n">http</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="n">http</span>
+            <span class="o">.</span><span class="na">csrf</span><span class="o">(</span><span class="nl">AbstractHttpConfigurer:</span><span class="o">:</span><span class="n">disable</span><span class="o">)</span>
+            <span class="c1">// Libera frames para o H2 funcionar</span>
+            <span class="o">.</span><span class="na">headers</span><span class="o">(</span><span class="n">headers</span> <span class="o">-&gt;</span> <span class="n">headers</span><span class="o">.</span><span class="na">frameOptions</span><span class="o">(</span><span class="n">frame</span> <span class="o">-&gt;</span> <span class="n">frame</span><span class="o">.</span><span class="na">disable</span><span class="o">()))</span> 
+            <span class="o">.</span><span class="na">authorizeHttpRequests</span><span class="o">(</span><span class="n">auth</span> <span class="o">-&gt;</span> <span class="n">auth</span>
+                <span class="c1">// Adicionando o caminho para o h2-console</span>
+                <span class="o">.</span><span class="na">requestMatchers</span><span class="o">(</span><span class="k">new</span> <span class="nc">AntPathRequestMatcher</span><span class="o">(</span><span class="s">"/h2-console/**"</span><span class="o">)).</span><span class="na">permitAll</span><span class="o">()</span>
+                
+                <span class="c1">//Manter as outras rotas</span>
+                <span class="o">.</span><span class="na">anyRequest</span><span class="o">().</span><span class="na">authenticated</span><span class="o">()</span>
+            <span class="o">)</span>
+            <span class="o">.</span><span class="na">httpBasic</span><span class="o">(</span><span class="nc">Customizer</span><span class="o">.</span><span class="na">withDefaults</span><span class="o">());</span>
+
+        <span class="k">return</span> <span class="n">http</span><span class="o">.</span><span class="na">build</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="c1">//Manter o código anterior</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="4-reiniciando-o-projeto">4. Reiniciando o projeto</h3>
+
+<ul>
+  <li>Caso o projeto esteja em execução durante as mudanças, é necessário reiniciá-lo, para garantir que as mudanças serão aplicadas corretamente
+    <ul>
+      <li>Se o projeto estiver rodando
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">Ctrl+C</code> para parar a execução</li>
+        </ul>
+      </li>
+      <li><code class="language-plaintext highlighter-rouge">mvn spring-boot:run</code> para iniciar o projeto</li>
+      <li>OBS: Se necessário <code class="language-plaintext highlighter-rouge">mvn clean install spring-boot:run -DskipTests</code> para limpar absolutamente tudo antes de rodar</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="5-testar-o-banco">5. Testar o banco</h3>
+
+<ul>
+  <li>Acessar <a href="http://localhost:8080/h2-console">http://localhost:8080/h2-console</a>
+    <ul>
+      <li>JDBC URL: jdbc:h2:mem:testdb</li>
+      <li>Username: sa</li>
+      <li>Password:</li>
+      <li>Clique em <strong>Connect</strong></li>
+      <li>Ver a tela de gerenciamento do BD</li>
+      <li>Inserir o teste sugerido</li>
+    </ul>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">DROP</span> <span class="k">TABLE</span> <span class="n">IF</span> <span class="k">EXISTS</span> <span class="n">teste</span><span class="p">;</span>
+
+  <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">teste</span> <span class="p">(</span>
+      <span class="n">id</span> <span class="nb">BIGINT</span> <span class="n">AUTO_INCREMENT</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">,</span>
+      <span class="n">titulo</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
+  <span class="p">);</span>
+
+  <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">teste</span><span class="p">(</span><span class="n">titulo</span><span class="p">)</span> <span class="k">VALUES</span> 
+  <span class="p">(</span><span class="s1">'Isso é um teste'</span><span class="p">),</span> 
+  <span class="p">(</span><span class="s1">'Isso é outro teste'</span><span class="p">);</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3 id="6-fazendo-a-autenticação-via-banco-de-dados">6. Fazendo a autenticação via Banco de Dados</h3>
+<p>Agora nós iremos pegar o código que vínhamos desenvolvendo e conectar tudo. O processo é simples, mas um pouco longo, então deixamos todos os códigos aqui, mas não tenham medo de nos perguntar.
+Decidimos separar em 6 etapas:</p>
+<ol>
+  <li>Alterar a classe <code class="language-plaintext highlighter-rouge">Usuario</code>
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//Novos imports</span>
+ <span class="kn">import</span> <span class="nn">java.util.Collection</span><span class="o">;</span>
+ <span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+
+ <span class="kn">import</span> <span class="nn">org.springframework.security.core.userdetails.UserDetails</span><span class="o">;</span>
+ <span class="nd">@Entity</span>
+ <span class="nd">@Table</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">"usuarios"</span><span class="o">)</span>
+ <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Usuario</span> <span class="kd">implements</span> <span class="nc">UserDetails</span> <span class="o">{</span>
+     <span class="c1">//Removemos a atributo "nome" e adicionamos "login", "senha" e "role"</span>
+
+     <span class="nd">@Id</span>
+     <span class="nd">@GeneratedValue</span><span class="o">(</span><span class="n">strategy</span> <span class="o">=</span> <span class="nc">GenerationType</span><span class="o">.</span><span class="na">IDENTITY</span><span class="o">)</span>
+     <span class="kd">private</span> <span class="nc">Long</span> <span class="n">id</span><span class="o">;</span>
+
+     <span class="nd">@Column</span><span class="o">(</span><span class="n">nullable</span> <span class="o">=</span> <span class="kc">false</span><span class="o">,</span> <span class="n">unique</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
+     <span class="kd">private</span> <span class="nc">String</span> <span class="n">username</span><span class="o">;</span>
+
+     <span class="nd">@Column</span><span class="o">(</span><span class="n">nullable</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>
+     <span class="kd">private</span> <span class="nc">String</span> <span class="n">senha</span><span class="o">;</span>
+
+     <span class="nd">@Column</span><span class="o">(</span><span class="n">nullable</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>
+     <span class="kd">private</span> <span class="nc">String</span> <span class="n">role</span><span class="o">;</span>
+        
+     <span class="nd">@Column</span><span class="o">(</span><span class="n">nullable</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>
+     <span class="kd">private</span> <span class="kt">boolean</span> <span class="n">possuiMultas</span><span class="o">;</span>
+
+     <span class="kd">public</span> <span class="nf">Usuario</span><span class="o">()</span> <span class="o">{}</span>
+
+     <span class="kd">public</span> <span class="nf">Usuario</span><span class="o">(</span><span class="nc">String</span> <span class="n">username</span><span class="o">,</span> <span class="nc">String</span> <span class="n">senha</span><span class="o">,</span> <span class="nc">String</span> <span class="n">role</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">possuiMultas</span><span class="o">)</span> <span class="o">{</span>
+         <span class="k">this</span><span class="o">.</span><span class="na">username</span> <span class="o">=</span> <span class="n">username</span><span class="o">;</span>
+         <span class="k">this</span><span class="o">.</span><span class="na">senha</span> <span class="o">=</span> <span class="n">senha</span><span class="o">;</span>
+         <span class="k">this</span><span class="o">.</span><span class="na">role</span> <span class="o">=</span> <span class="n">role</span><span class="o">;</span>
+         <span class="k">this</span><span class="o">.</span><span class="na">possuiMultas</span> <span class="o">=</span> <span class="n">possuiMultas</span><span class="o">;</span>
+     <span class="o">}</span>
+
+     <span class="c1">// --- Métodos da Interface UserDetails ---</span>
+     <span class="nd">@Override</span>
+     <span class="kd">public</span> <span class="nc">Collection</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="nc">GrantedAuthority</span><span class="o">&gt;</span> <span class="nf">getAuthorities</span><span class="o">()</span> <span class="o">{</span>
+         <span class="c1">// O Spring Security espera que a role tenha o prefixo "ROLE_"</span>
+         <span class="c1">// Se no banco está "ADMIN", retornamos "ROLE_ADMIN"</span>
+         <span class="k">return</span> <span class="nc">List</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="k">new</span> <span class="nc">SimpleGrantedAuthority</span><span class="o">(</span><span class="s">"ROLE_"</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">role</span><span class="o">));</span>
+     <span class="o">}</span>
+
+     <span class="nd">@Override</span>
+     <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getPassword</span><span class="o">()</span> <span class="o">{</span>
+         <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">senha</span><span class="o">;</span>
+     <span class="o">}</span>
+
+     <span class="nd">@Override</span>
+     <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getUsername</span><span class="o">()</span> <span class="o">{</span>
+         <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">username</span><span class="o">;</span>
+     <span class="o">}</span>
+
+     <span class="c1">// Controles de expiração (vamos deixar tudo true para simplificar)</span>
+     <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isAccountNonExpired</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span> <span class="o">}</span>
+     <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isAccountNonLocked</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span> <span class="o">}</span>
+     <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isCredentialsNonExpired</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span> <span class="o">}</span>
+     <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isEnabled</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span> <span class="o">}</span>
+
+     <span class="c1">//getters e setters tradicionais</span>
+ <span class="o">}</span>
+</code></pre></div>    </div>
+    <ul>
+      <li><strong>OBS 1</strong>: As alterações feitas são necessárias para que a nossa classe <code class="language-plaintext highlighter-rouge">Usuário</code> fique no padrão esperado pelo Spring Security, e assim ele possa trabalhar corretamente. Por isso que <code class="language-plaintext highlighter-rouge">getPassword()</code> existe no lugar de <code class="language-plaintext highlighter-rouge">getSenha()</code>, por exemplo.</li>
+      <li><strong>OBS 2</strong>: Controles de expiração são uma boa prática de mercado que não abordaremos aqui para não inflar demais o minicurso. Mas, em resumo, eles servem para bloquear/banir contas de acordo com critérios específicos.</li>
+    </ul>
+  </li>
+  <li>Alterar o <code class="language-plaintext highlighter-rouge">UsuarioRepository</code> para buscar o usuario por Login
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">//novo import</span>
+ <span class="kn">import</span> <span class="nn">java.util.Optional</span><span class="o">;</span>
+
+ <span class="nd">@Repository</span>
+ <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">UsuarioRepository</span> <span class="kd">extends</span> <span class="nc">JpaRepository</span><span class="o">&lt;</span><span class="nc">Usuario</span><span class="o">,</span> <span class="nc">Long</span><span class="o">&gt;</span> <span class="o">{</span>
+     <span class="nc">Optional</span><span class="o">&lt;</span><span class="nc">Usuario</span><span class="o">&gt;</span> <span class="nf">findByUsername</span><span class="o">(</span><span class="nc">String</span> <span class="n">username</span><span class="o">);</span>
+ <span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Criar o <code class="language-plaintext highlighter-rouge">AutenticacaoService</code>
+    <ul>
+      <li>Classe que implementa <code class="language-plaintext highlighter-rouge">UserDetailsService</code>, coisa que o Spring Security procura automaticamente</li>
+    </ul>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kn">import</span> <span class="nn">org.springframework.stereotype.Service</span><span class="o">;</span>
+ <span class="kn">import</span> <span class="nn">org.springframework.security.core.userdetails.UserDetailsService</span><span class="o">;</span>
+ <span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="o">;</span>
+ <span class="kn">import</span> <span class="nn">org.springframework.security.core.userdetails.UserDetails</span><span class="o">;</span>
+ <span class="kn">import</span> <span class="nn">org.springframework.security.core.userdetails.UsernameNotFoundException</span><span class="o">;</span>
+
+ <span class="kn">import</span> <span class="nn">ufrn.petcc.meu_primeiro_projeto.Repository.UsuarioRepository</span><span class="o">;</span>
+ <span class="nd">@Service</span>
+ <span class="kd">public</span> <span class="kd">class</span> <span class="nc">AutenticacaoService</span>  <span class="kd">implements</span> <span class="nc">UserDetailsService</span> <span class="o">{</span>
+
+     <span class="nd">@Autowired</span>
+     <span class="kd">private</span> <span class="nc">UsuarioRepository</span> <span class="n">usuarioRepository</span><span class="o">;</span>
+
+     <span class="nd">@Override</span>
+     <span class="kd">public</span> <span class="nc">UserDetails</span> <span class="nf">loadUserByUsername</span><span class="o">(</span><span class="nc">String</span> <span class="n">username</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">UsernameNotFoundException</span> <span class="o">{</span>
+         <span class="k">return</span> <span class="n">usuarioRepository</span><span class="o">.</span><span class="na">findByUsername</span><span class="o">(</span><span class="n">username</span><span class="o">)</span>
+                 <span class="o">.</span><span class="na">orElseThrow</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="k">new</span> <span class="nc">UsernameNotFoundException</span><span class="o">(</span><span class="s">"Usuário não encontrado"</span> <span class="o">+</span> <span class="n">username</span><span class="o">));</span>
+     <span class="o">}</span>
+ <span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Ajustar o <code class="language-plaintext highlighter-rouge">SecurityConfig</code>
+    <ul>
+      <li>Remover os usuários em memória e configurar o encriptador de senhas (BCrypt)
+        <ul>
+          <li>Apagar o InMemoryUserDetailsManager;</li>
+          <li>Adicionar o PasswordEncoder.
+            <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nd">@Configuration</span>
+ <span class="nd">@EnableWebSecurity</span>
+ <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SecurityConfig</span> <span class="o">{</span>
+
+     <span class="nd">@Bean</span>
+     <span class="kd">public</span> <span class="nc">SecurityFilterChain</span> <span class="nf">securityFilterChain</span><span class="o">(</span><span class="nc">HttpSecurity</span> <span class="n">http</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+         <span class="c1">// --- AQUI MANTENHA TUDO DA FORMA QUE ESTAVA ---</span>
+     <span class="o">}</span>
+
+     <span class="c1">// --- MUDANÇA AQUI ---</span>
+     <span class="c1">// 1. Removemos o UserDetailsService (InMemory)</span>
+     <span class="c1">// 2. Adicionamos o PasswordEncoder (BCrypt)</span>
+     <span class="c1">// O Spring Security vai achar o AutenticacaoService automaticamente.</span>
+            
+     <span class="nd">@Bean</span>
+     <span class="kd">public</span> <span class="nc">PasswordEncoder</span> <span class="nf">passwordEncoder</span><span class="o">()</span> <span class="o">{</span>
+         <span class="k">return</span> <span class="k">new</span> <span class="nf">BCryptPasswordEncoder</span><span class="o">();</span>
+     <span class="o">}</span>
+ <span class="o">}</span>
+</code></pre></div>            </div>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Criar um ‘Semeador’ (<em>Data Seeder</em>)
+    <ul>
+      <li>O banco começa vazio, então precisa-se de um código que rode ao iniciar para criar o primeiro ADMIN, senão ninguém consegue entrar</li>
+      <li>Dentro de <code class="language-plaintext highlighter-rouge">config</code> crie o a classe <code class="language-plaintext highlighter-rouge">BancoDeDadosSeeder.java</code></li>
+    </ul>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="o">;</span>
+ <span class="kn">import</span> <span class="nn">org.springframework.boot.CommandLineRunner</span><span class="o">;</span>
+ <span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Configuration</span><span class="o">;</span>
+ <span class="kn">import</span> <span class="nn">org.springframework.security.crypto.password.PasswordEncoder</span><span class="o">;</span>
+ <span class="kn">import</span> <span class="nn">ufrn.petcc.meu_primeiro_projeto.Model.Usuario</span><span class="o">;</span>
+ <span class="kn">import</span> <span class="nn">ufrn.petcc.meu_primeiro_projeto.Repository.UsuarioRepository</span><span class="o">;</span>
+
+ <span class="nd">@Configuration</span>
+ <span class="kd">public</span> <span class="kd">class</span> <span class="nc">BancoDeDadosSeeder</span> <span class="kd">implements</span> <span class="nc">CommandLineRunner</span> <span class="o">{</span>
+
+     <span class="nd">@Autowired</span>
+     <span class="kd">private</span> <span class="nc">UsuarioRepository</span> <span class="n">usuarioRepository</span><span class="o">;</span>
+
+     <span class="nd">@Autowired</span>
+     <span class="kd">private</span> <span class="nc">PasswordEncoder</span> <span class="n">passwordEncoder</span><span class="o">;</span>
+
+     <span class="nd">@Override</span>
+     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">(</span><span class="nc">String</span><span class="o">...</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+            
+         <span class="c1">// Cadastra o ADMIN se não existir</span>
+         <span class="k">if</span> <span class="o">(</span><span class="n">usuarioRepository</span><span class="o">.</span><span class="na">findByUsername</span><span class="o">(</span><span class="s">"admin"</span><span class="o">).</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+             <span class="nc">Usuario</span> <span class="n">admin</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Usuario</span><span class="o">(</span>
+                 <span class="s">"admin"</span><span class="o">,</span>
+                 <span class="n">passwordEncoder</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="s">"admin123"</span><span class="o">),</span> 
+                 <span class="s">"ADMIN"</span><span class="o">,</span>
+                 <span class="kc">false</span>
+             <span class="o">);</span>
+             <span class="n">usuarioRepository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">admin</span><span class="o">);</span>
+             <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"----- USUÁRIO ADMIN CRIADO -----"</span><span class="o">);</span>
+         <span class="o">}</span>
+
+         <span class="c1">// Cadastra o USER comum se não existir</span>
+         <span class="k">if</span> <span class="o">(</span><span class="n">usuarioRepository</span><span class="o">.</span><span class="na">findByUsername</span><span class="o">(</span><span class="s">"usuario"</span><span class="o">).</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+             <span class="nc">Usuario</span> <span class="n">user</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Usuario</span><span class="o">(</span>
+                 <span class="s">"usuario"</span><span class="o">,</span> 
+                 <span class="n">passwordEncoder</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="s">"123456"</span><span class="o">),</span> 
+                 <span class="s">"USER"</span><span class="o">,</span>
+                 <span class="kc">false</span>
+             <span class="o">);</span>
+             <span class="n">usuarioRepository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+             <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"----- USUÁRIO COMUM CRIADO -----"</span><span class="o">);</span>
+         <span class="o">}</span>
+     <span class="o">}</span>
+ <span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Testes
+    <ol>
+      <li>Antes de testar, vamos liberar um recurso que talvez ainda não esteja pronto
+        <ul>
+          <li>Vamos adicionar algumas coisas no nosso arquivo <code class="language-plaintext highlighter-rouge">OpenApiConfig.java</code>
+            <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nd">@Configuration</span>
+ <span class="kd">public</span> <span class="kd">class</span> <span class="nc">OpenApiConfig</span> <span class="o">{</span>
+
+<span class="nd">@Bean</span>
+<span class="kd">public</span> <span class="nc">OpenAPI</span> <span class="nf">customOpenAPI</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">OpenAPI</span><span class="o">()</span>
+            <span class="c1">// --- CONTEÚDO QUE SERÁ MANTIDO ---</span>
+            <span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="k">new</span> <span class="nc">Info</span><span class="o">()</span>
+                    <span class="o">.</span><span class="na">title</span><span class="o">(</span><span class="s">"API da Biblioteca"</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">description</span><span class="o">(</span><span class="s">"API para gestão de livros e alugueis"</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">contact</span><span class="o">(</span><span class="k">new</span> <span class="nc">Contact</span><span class="o">().</span><span class="na">name</span><span class="o">(</span><span class="s">"Nome Sobrenome"</span><span class="o">).</span><span class="na">email</span><span class="o">(</span><span class="s">"seu_email@mail.com"</span><span class="o">))</span>
+                    <span class="o">.</span><span class="na">version</span><span class="o">(</span><span class="s">"1.0.0"</span><span class="o">))</span> <span class="c1">// Sem ponto e vírgula aqui</span>
+                        
+            <span class="c1">// --- MUDANÇA AQUI ---</span>
+            <span class="c1">// Adiciona o botão de "Cadeado" globalmente em todos os endpoints</span>
+            <span class="o">.</span><span class="na">addSecurityItem</span><span class="o">(</span><span class="k">new</span> <span class="nc">SecurityRequirement</span><span class="o">().</span><span class="na">addList</span><span class="o">(</span><span class="s">"basicScheme"</span><span class="o">))</span>
+                        
+            <span class="c1">// Define qual é o tipo de segurança (Basic Auth = Login e Senha)</span>
+            <span class="o">.</span><span class="na">components</span><span class="o">(</span><span class="k">new</span> <span class="nc">Components</span><span class="o">()</span>
+                    <span class="o">.</span><span class="na">addSecuritySchemes</span><span class="o">(</span><span class="s">"basicScheme"</span><span class="o">,</span>
+                            <span class="k">new</span> <span class="nf">SecurityScheme</span><span class="o">()</span>
+                                    <span class="o">.</span><span class="na">type</span><span class="o">(</span><span class="nc">SecurityScheme</span><span class="o">.</span><span class="na">Type</span><span class="o">.</span><span class="na">HTTP</span><span class="o">)</span>
+                                    <span class="o">.</span><span class="na">scheme</span><span class="o">(</span><span class="s">"basic"</span><span class="o">)</span>
+                    <span class="o">));</span>
+<span class="o">}</span>
+ <span class="o">}</span>
+</code></pre></div>            </div>
+          </li>
+        </ul>
+      </li>
+      <li>Testar funcionamento
+        <ul>
+          <li>Reinicie a aplicação
+            <ul>
+              <li>Ctrl + C;</li>
+              <li><code class="language-plaintext highlighter-rouge">mvn spring-boot:run</code></li>
+            </ul>
+          </li>
+          <li>Veja se o <em>seeder</em> funcionou
+            <ul>
+              <li>Acesse: http://localhost:8080/h2-console</li>
+              <li>Insira os dados de conexão (são os mesmos que foram utilizados anteriormente)</li>
+              <li>Conecte ao H2</li>
+              <li>Na caixa de comando SQL, digite o código abaixo e clique em <em>RUN</em>
+                <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">usuarios</span><span class="p">;</span>
+</code></pre></div>                </div>
+              </li>
+              <li>Se tudo tiver dado certo, você verá duas linhas: uma para admin, outra para usuario</li>
+              <li>Note que a coluna senha estará cheia de caracteres estranhos (ex: $2a$10$EixZa…).</li>
+              <li>Isso é o BCrypt funcionando! Se você visse “admin123” escrito limpo, estaria errado (segurança fraca).</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>Testar bloqueio de segurança
+        <ul>
+          <li>Agora tentaremos fazer uma ação sem estarmos logados
+            <ul>
+              <li>Acesse: http://localhost:8080/swagger-ui.html por uma aba anônima</li>
+              <li>Vá no endpoint <strong>POST /livros</strong> (Cadastrar Livro)</li>
+              <li>Clique em <em>Try it out</em>.</li>
+              <li>Apague a sugestão e cole o seguinte JSON
+                <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">  </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"titulo"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Computing Machinery and Intelligence"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"autor"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Alan Turing"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"anoPublicado"</span><span class="p">:</span><span class="w"> </span><span class="mi">1950</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"disponivel"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span></code></pre></div>                </div>
+              </li>
+              <li>Clique em <em>Execute</em>
+                <ul>
+                  <li>Se aparecer um pop-up pedindo que você digite o usuário e senha, clique em <em>Cancel</em></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>Perceba que apareceu o código 401. Isso significa que a operação não está autorizada</li>
+        </ul>
+      </li>
+      <li>Testar login como ADMIN
+        <ul>
+          <li>Agora faremos um teste estando logados</li>
+          <li>Na mesma aba anônima e no mesmo endpoint <strong>POST /livros</strong>, procure por um cadeado no canto direito</li>
+          <li>Clique no cadeado e insira as credenciais
+            <ul>
+              <li>Username admin</li>
+              <li>Password admin123</li>
+            </ul>
+          </li>
+          <li>Utilize o mesmo JSON do passo anterior</li>
+          <li>Cique em <em>Execute</em></li>
+          <li>Perceba que, agora, a resposta foi <strong>200</strong>, ou seja, estávamos autenticados e deu tudo certo</li>
+        </ul>
+      </li>
+      <li>Testar permissões de usuário comum
+        <ul>
+          <li>Procure novamente pelo cadeado e clique nele</li>
+          <li>Clique em <em>logout</em></li>
+          <li>Insira as credenciais de usuário comum
+            <ul>
+              <li>Username: usuario</li>
+              <li>Password: 123456</li>
+            </ul>
+          </li>
+          <li>Utilize o mesmo JSON dos passos anteriores</li>
+          <li>Clique em <em>Execute</em></li>
+          <li>Perceba que, agora, a resposta foi <strong>403</strong>, ou seja, essa ação é proibida, o que está de acordo com o que definimos em <code class="language-plaintext highlighter-rouge">SecurityConfig.java</code></li>
+        </ul>
+      </li>
+      <li>Testar persistência
+        <ul>
+          <li>Volte na aba do <strong>H2 Console</strong></li>
+          <li>Faça login novamente, se necesário</li>
+          <li>Rode o SQL abaixo
+            <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">livro</span><span class="p">;</span>
+</code></pre></div>            </div>
+          </li>
+          <li>Você deve ver o livro que cadastrou via Swagger.</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+</ol>
+
+<h2 id="encerramento">Encerramento</h2>
+<p>Agora que vimos tudo o que precisávamos para hoje, podemos seguir para o conteúdo do quinto dia, ou seja, nosso projeto.</p>
+
+                </div>
+            </main>
+            <script src="./assets/js/sumario_script.js"></script>
+        </div>
+    </body>
+</html>
+
+<script type="text/javascript">
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  },
+  options: {
+    ignoreHtmlClass: 'highlight|code'
+  }
+};
+</script>
+<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
