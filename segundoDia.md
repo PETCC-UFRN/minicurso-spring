@@ -111,6 +111,40 @@ Veja que isso é muito parecido com o protocolo HTTP! Entende porque falamos del
 
 OBS.: É importante lembrar que APIs RESTful são *baseadas* no protocolo HTTP (utilizam muitos métodos do protocolo), mas que não *seguem-o* à risca.
 
+### O que a API retorna? --> JSON
+
+Quando fazemos uma requisição para uma API, ela não retorna tela nem HTML.
+Ela retorna dados estruturados, normalmente no formato JSON (JavaScript Object Notation).
+
+O JSON é basicamente um jeito padronizado de representar objetos usando texto.
+
+#### Ideia principal
+
+A API é o "garçom":
+
+- Você faz o pedido (requisição HTTP)
+- Ela busca os dados
+- Ela entrega os dados em JSON (resposta)
+
+#### Exemplo
+
+GET /usuarios/1
+
+Resposta (JSON)
+```json
+{
+  "id": 1,
+  "nome": "Ana",
+  "email": "ana@email.com",
+  "ativo": true
+}
+```
+
+Confira a API: 
+```
+https://test-frontend-developer.s3.amazonaws.com/data/locations.json
+```
+
 ## Arquitetura de Sistemas
 
 <div style="text-align: center;">
