@@ -534,3 +534,8 @@ O resultado final pode ser visualizado abrindo o navegador de sua escolha e aces
 <div style="text-align: center; padding-bottom: 50px;">
   <img alt="emoji festejando!!!!" src="assets/images/partyemoji.png" width="30%">
 </div>
+
+### Gabarito do projeto desenvolvido
+
+[Cliquando Aqui](https://drive.google.com/drive/folders/1UM0GL6FTM4mDQQG0BLh__sWEY4hP83h-?usp=sharing) vocês podem baixar a versão final do projetinho que fizemos nesse dia.
+
