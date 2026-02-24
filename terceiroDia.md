@@ -286,40 +286,6 @@ No ecossistema Spring, utilizamos principalmente a biblioteca SpringDoc OpenAPI,
 
 5. Acessar a interface em `http://localhost:8080/swagger-ui.html`
 
-## Exercício Prático (Live Coding) <!--Acredito que esse exemplo ainda vai ser adaptado para a ideia do restaurante, que é o projeto final-->
-
-Daremos continuidade ao exercício feito no final do último dia, adicionando uma regra de negócio para a biblioteca e documentando seu código e sua API.
-
-### Regra de negócio
-
-- Um usuário não pode alugar um livro se tiver multas pendentes.
-- Um usuário não pode alugar um livro indisponível.
-
-<!--Spoiler box clicável para caso o aluno queira saber o que fazer-->
-<details>
-<summary><strong>Dica</strong></summary>
-
-<ul>
-  <li>Criar o <code>LivroService</code></li>
-  <li>Injetar o <code>LivroRepository</code></li>
-  <li>Criar o método <code>AlugarLivro()</code></li>
-  <li>Verificar se o usuário possui multas pendentes</li>
-  <li>Verificar se o livro está disponível</li>
-  <li>Lançar exceção ou retornar erro caso a regra falhe</li>
-</ul>
-
-</details>
-
-### Funcionalidades esperadas ao fim do exercício
-
-- Cadastro de livros
-- Listagem de livros
-- Aluguel de livros
-  - Com regras de negócio para checagem de erros
-- Integração com banco de dados
-- Documentação dos endpoints com Swagger
-- Documentação do código com JavaDoc
-
 ### Exemplo de código documentado com Swagger
 
 ```java
@@ -381,3 +347,37 @@ public class AluguelDTO {
     // getters e setters
 }
 ```
+
+## Exercício Prático (Live Coding) <!--Acredito que esse exemplo ainda vai ser adaptado para a ideia do restaurante, que é o projeto final-->
+
+Daremos continuidade ao exercício feito no final do último dia, adicionando uma regra de negócio para a biblioteca e documentando seu código e sua API.
+
+### Regra de negócio
+
+- Um usuário não pode alugar um livro se tiver multas pendentes.
+- Um usuário não pode alugar um livro indisponível.
+
+<!--Spoiler box clicável para caso o aluno queira saber o que fazer-->
+<details>
+<summary><strong>Dica</strong></summary>
+
+<ul>
+  <li>Criar o <code>LivroService</code></li>
+  <li>Injetar o <code>LivroRepository</code></li>
+  <li>Criar o método <code>AlugarLivro()</code></li>
+  <li>Verificar se o usuário possui multas pendentes</li>
+  <li>Verificar se o livro está disponível</li>
+  <li>Lançar exceção ou retornar erro caso a regra falhe</li>
+</ul>
+
+</details>
+
+### Funcionalidades esperadas ao fim do exercício
+
+- Cadastro de livros
+- Listagem de livros
+- Aluguel de livros
+  - Com regras de negócio para checagem de erros
+- Integração com banco de dados
+- Documentação dos endpoints com Swagger
+- Documentação do código com JavaDoc
